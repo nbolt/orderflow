@@ -6,6 +6,18 @@ OrderComponent = React.createClass
     order: React.PropTypes.object
     fetchOrder: React.PropTypes.func.isRequired
 
+  childContextTypes:
+    validateAddress: React.PropTypes.func
+
+  getChildContext: ->
+    validateAddress: this.validateAddress
+
+  getInitialState: ->
+    addressValidated: true
+
+  validateAddress: (bool) ->
+    this.setState({ addressValidated: bool })
+
   syncOrder: ->
     react = this
     $.ajax
@@ -27,6 +39,16 @@ OrderComponent = React.createClass
       index = -1 if index == (len-1)
       pane  = $('#form .pane.left li:eq(' + (index+1) + ')').attr('class')
     this.props.history.push("/order/#{this.props.params.ident}/#{pane}")
+
+  backClass: ->
+
+  continueClass: ->
+    if this.props.routes[2]
+      switch this.props.routes[2].path
+        when 'service_type'
+          'hidden' if !this.context.order || this.context.order && !this.context.order.vs._enabled && !this.context.order.sms._enabled
+        when 'service_address'
+          'hidden' unless this.state.addressValidated
 
   componentDidMount: ->
     this.context.fetchOrder()
@@ -58,8 +80,8 @@ OrderComponent = React.createClass
           <div className='viewport'>{this.props.children}</div>
           <div className='foot'>
             <ul className='links'>
-              <li><a href='javascript:void(0)' onClick={this.nav.bind(null, 'back')}>Back</a></li>
-              <li><a href='javascript:void(0)' onClick={this.nav.bind(null, 'continue')}>Continue</a></li>
+              <li className={this.backClass}><a href='javascript:void(0)' onClick={this.nav.bind(null, 'back')}>Back</a></li>
+              <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.nav.bind(null, 'continue')}>Continue</a></li>
             </ul>
           </div>
         </div>

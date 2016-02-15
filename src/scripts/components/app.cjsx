@@ -52,11 +52,11 @@ AppComponent = React.createClass
       method: 'GET'
       headers: { Authorization: 'Bearer ' + react.state.token }
       success: (rsp) ->
-        react.setState({ email: rsp.email, address: rsp.customer_service_address })
+        react.setState({ email: rsp.email, name: rsp.customer_name, address: rsp.customer_service_address })
 
   render: ->
     <div id='app-component'>
-      <HeaderComponent email={this.state.email} />
+      <HeaderComponent email={this.state.email} name={this.state.name} />
       <div id='container'>
         <nav>
           <ul className='links'>

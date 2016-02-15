@@ -4,9 +4,9 @@ HeaderComponent = React.createClass
   render: ->
     infoBlock =
       <div className='nav info'>
-        {if this.props.email
+        {unless _.isEmpty(this.props.email) && _.isEmpty(this.props.name)
           <ul className='links'>
-            <li>Logged in as <span className='em'>{this.props.email}</span></li>
+            <li>Logged in as <span className='em'>{_.isEmpty(this.props.email) && this.props.name || this.props.email}</span></li>
             <li>Account Balance: <span className='em'>$0</span></li>
             <li><span className='em'>0</span> active calls</li>
           </ul>
