@@ -11,6 +11,7 @@ RouterComponent = React.createClass
           <Route path="service_type" component={ServiceTypeComponent} />
           <Route path="service_address" component={ServiceAddressComponent} />
           <Route path="ip_addresses" component={IPAddressesComponent} />
+          <Route path="existing_numbers" component={ExistingNumbersComponent} />
           <Route path="new_numbers" component={NewNumbersComponent} />
           <Route path="port_numbers" component={PortNumbersComponent} />
           <Route path="number_features" component={NumberFeaturesComponent} />

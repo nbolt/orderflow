@@ -57,6 +57,7 @@ OrderComponent = React.createClass
     react = this
     linkClass = (path) -> classNames path,
       selected: react.props.routes[2] && react.props.routes[2].path == path
+      hidden: !react.context.order || react.context.order && ((react.context.order.sms._enabled && !_.includes(['service_type', 'service_address', 'existing_numbers', 'new_numbers'], path)) || (react.context.order.vs._enabled && !_.includes(['service_type', 'service_address', 'ip_addresses', 'new_numbers', 'port_numbers', 'number_features', 'review'], path)))
 
     <div id='order-component'>
       <div id='form'>
@@ -66,6 +67,7 @@ OrderComponent = React.createClass
               <li className={linkClass('service_type')}><Link to="/order/#{this.props.params.ident}/service_type">Service Type</Link></li>
               <li className={linkClass('service_address')}><Link to="/order/#{this.props.params.ident}/service_address">Service Address</Link></li>
               <li className={linkClass('ip_addresses')}><Link to="/order/#{this.props.params.ident}/ip_addresses">IP Addresses</Link></li>
+              <li className={linkClass('existing_numbers')}><Link to="/order/#{this.props.params.ident}/existing_numbers">Existing Numbers</Link></li>
               <li className={linkClass('new_numbers')}><Link to="/order/#{this.props.params.ident}/new_numbers">New Numbers</Link></li>
               <li className={linkClass('port_numbers')}><Link to="/order/#{this.props.params.ident}/port_numbers">Port Numbers</Link></li>
               <li className={linkClass('number_features')}><Link to="/order/#{this.props.params.ident}/number_features">Number Features</Link></li>

@@ -7,7 +7,9 @@ ServiceTypeComponent = React.createClass
 
   toggle: (type) ->
     order = this.context.order
-    this.context.updateOrder("#{type}._enabled", true) if !order || order && !(order.vs._enabled) && !(order.sms._enabled)
+    this.context.updateOrder("vs._enabled", false)
+    this.context.updateOrder("sms._enabled", false)
+    this.context.updateOrder("#{type}._enabled", true)
 
   render: ->
     voice = classNames 'type',
