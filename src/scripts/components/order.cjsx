@@ -3,13 +3,8 @@ Link = ReactRouter.Link
 OrderComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string.isRequired
-    order: React.PropTypes.func
-    fetchOrder: React.PropTypes.func.isRequired
-    router: React.PropTypes.func.isRequired
-    
-  childContextTypes:
     order: React.PropTypes.object
-    updateOrder: React.PropTypes.func
+    fetchOrder: React.PropTypes.func.isRequired
 
   syncOrder: ->
     react = this

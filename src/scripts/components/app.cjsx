@@ -1,9 +1,6 @@
 Link = ReactRouter.Link
 
 AppComponent = React.createClass
-  contextTypes:
-    router: React.PropTypes.func.isRequired
-
   childContextTypes:
     token: React.PropTypes.string
     address: React.PropTypes.object
@@ -19,10 +16,7 @@ AppComponent = React.createClass
     updateOrder: this.updateOrder
 
   getInitialState: ->
-    token:   'rPjBmIkXis8TSVLrfLz16rYWK4Teszml2GvPjw5S41B9ZqPPk2ZcKDzFQWETXwrO'
-    email:   null
-    address: null
-    order:   null
+    token:   'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
 
   newOrder: ->
     react = this
@@ -32,7 +26,7 @@ AppComponent = React.createClass
       headers: { Authorization: 'Bearer ' + react.state.token }
       dataType: 'json'
       success: (rsp) ->
-        react.context.router.push("/order/#{rsp.ident}/service_type")
+        react.props.history.push("/order/#{rsp.ident}/service_type")
         react.fetchOrder()
 
   fetchOrder: ->
