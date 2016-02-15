@@ -1,0 +1,115 @@
+global-reset()
+reset-html5()
+normalize-css()
+fluid-media()
+print-styles()
+border-box-html()
+
+gray = #7C8082
+
+header
+  padding: 20px
+  .right
+    float: right
+    .nav
+      margin-bottom: 10px
+      &.links
+        li
+          upcase()
+          font-size: 0.8em
+      &.info
+        float: right
+        li
+          font-size: 0.9em
+
+ul
+  &.links
+    breadcrumb: '|' 8px gray
+    li
+      color: gray
+      a
+        color: gray
+        text-decoration: none
+        &:hover
+          text-decoration: underline
+      .em
+        color: #444
+      
+nav
+  li
+    a
+      color: gray
+      text-decoration: none
+      &:hover
+        text-decoration: underline
+
+input
+  padding: 8px 12px
+  border-radius: 4px
+  outline: none
+  box-shadow: none
+  border: thin solid #ccc
+
+.field
+  display: inline-block
+  vertical-align: top
+  margin: 0 25px 10px 0 !important
+  input
+    width: 100%
+  &.full
+    field: left 80%
+  &.half
+    field: left 40%
+  &.quarter
+    field: left 20%
+  &.eigth
+    field: left 12.5%
+
+#container
+  width: 976px
+  margin: 100px auto
+  > nav
+    padding-bottom: 4px
+    border-bottom: thin solid #ccc
+  
+#order-component
+  #form
+    margin-top: 20px
+    height: 300px
+    .pane
+      display: inline-block
+      vertical-align: top
+      padding: 20px
+      &.left
+        width: 25%
+        border-right: thin solid #ccc
+        color: gray
+        nav
+          height: 280px
+          li
+            margin: 16px 0
+            &.selected a
+              color: #444
+        .info
+          height: 20px
+          .em
+            color: #444
+      &.right
+        width: 75%
+        .viewport
+          height: 296px
+        .foot
+          height: 20px
+    #service-type
+      .types
+        .type
+          display: inline-block
+          vertical-align: top
+          padding: 8px 12px 7px
+          border-radius: 5px
+          margin: 0 16px
+          border: thin solid #ccc
+          &:hover
+            cursor: pointer
+          &:hover, &.selected
+            background-color: #eee
