@@ -7,13 +7,15 @@ AppComponent = React.createClass
     order: React.PropTypes.object
     fetchOrder: React.PropTypes.func
     updateOrder: React.PropTypes.func
+    syncOrder: React.PropTypes.func
 
   getChildContext: ->
     token: this.state.token
     address: this.state.address
-    order: this.state.order
+    order: this.state.order || {}
     fetchOrder: this.fetchOrder
     updateOrder: this.updateOrder
+    syncOrder: this.syncOrder
 
   getInitialState: ->
     token:   'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
@@ -39,9 +41,19 @@ AppComponent = React.createClass
       success: (rsp) ->
         react.setState({ order: rsp.order })
 
-  updateOrder: (path, val, sync=false) ->
+  syncOrder: ->
+    react = this
+    $.ajax
+      url: "http://staging.apeironsys.com/api/_flow/orders/#{react.props.params.ident}"
+      method: 'PUT'
+      headers: { Authorization: 'Bearer ' + react.state.token }
+      dataType: 'json'
+      contentType: 'application/json'
+      data: JSON.stringify({ order: react.state.order })
+
+  updateOrder: (values, sync=false) ->
     order = this.state.order || {vs:{_enabled:false},sms:{_enabled:false}}
-    order = _.set(order, path, val)
+    _.each(values, (v) -> _.set(order, v[0], v[1]))
     this.setState({ order: order })
     this.syncOrder() if sync
 

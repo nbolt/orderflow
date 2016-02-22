@@ -85,7 +85,8 @@ input
         border-right: thin solid #ccc
         color: gray
         nav
-          height: 280px
+          overflow: auto
+          height: 300px
           li
             margin: 16px 0
             &.selected a
@@ -99,13 +100,13 @@ input
       &.right
         width: 75%
         .viewport
-          height: 296px
+          height: 300px
         .foot
           height: 20px
           .hidden
             display: none
     #service-type
-      .types
+      .options
         .type
           display: inline-block
           vertical-align: top
@@ -117,6 +118,12 @@ input
             cursor: pointer
           &:hover, &.selected
             background-color: #eee
+      .type-containers
+        margin-top: 20px
+        .container
+          display: none
+          &.selected
+            display: block
     #service-address
       .row
         &.addresses
