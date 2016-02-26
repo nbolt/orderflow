@@ -21,7 +21,9 @@ ServiceAddressComponent = React.createClass
       dataType: 'json'
       data: { address: "#{addr.line_1} #{addr.line_2}, #{addr.city}, #{addr.state} #{addr.zip}" }
       success: (rsp) ->
-        react.setState({ addresses: rsp }) if rsp[0]
+        if rsp[0]
+          addresses = _.filter(rsp, (addr) -> addr.city && addr.state && addr.postal_code && addr.street_number && addr.route)
+          react.setState({ addresses: addresses })
 
   selectAddress: (address) ->
     addr = { line_1: "#{address.street_number} #{address.route}", line_2: address.subpremise, city: address.city, state: address.state, zip: address.postal_code }
@@ -34,7 +36,8 @@ ServiceAddressComponent = React.createClass
 
   formUpdate: (ev) ->
     addr = this.state.address
-    this.state.address[ev.target.name] = ev.target.value
+    addr[ev.target.name] = ev.target.value
+    this.setState({ address: addr })
 
   nav: (dir) ->
     this.context.syncOrder()
