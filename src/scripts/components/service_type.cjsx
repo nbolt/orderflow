@@ -21,7 +21,6 @@ ServiceTypeComponent = React.createClass
       selected: _.get(this.context.order, path)
 
   backClass: ->
-    'hidden'
 
   continueClass: ->
     hidden = false

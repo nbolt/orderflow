@@ -5,12 +5,15 @@ ServiceAddressComponent = React.createClass
     token: React.PropTypes.string
     order: React.PropTypes.object
     updateOrder: React.PropTypes.func
+    syncOrder: React.PropTypes.func
     address: React.PropTypes.object
     validateAddress: React.PropTypes.func
+    addressValidated: React.PropTypes.bool
 
-  validateAddress: (addr) ->
+  validateAddress: ->
     react = this
     react.context.validateAddress(false)
+    addr = this.state.address
     $.ajax
       url: "http://staging.apeironsys.com/api/address/validate/"
       method: 'POST'
@@ -20,56 +23,101 @@ ServiceAddressComponent = React.createClass
       success: (rsp) ->
         react.setState({ addresses: rsp }) if rsp[0]
 
-  formUpdate: (ev) ->
-    addr = _.get(this.context, 'order.service_addresses.default.full') || this.context.address || {}
-    addr[ev.target.name] = ev.target.value
-    this.context.updateOrder('service_addresses.default.full', addr)
-    this.validateAddress addr
-
   selectAddress: (address) ->
     addr = { line_1: "#{address.street_number} #{address.route}", line_2: address.subpremise, city: address.city, state: address.state, zip: address.postal_code }
-    this.context.updateOrder('service_addresses.default.full', addr)
-    this.context.validateAddress(true)
+    this.context.updateOrder([['service_addresses.default.full', addr]])
+    this.context.validateAddress true
     this.setState({ addresses: [] })
 
-  getInitialState: ->
-    addresses:        []
+  modifyAddress: ->
+    this.context.validateAddress false
 
-  componentWillMount: ->
-    this.validateAddress = _.debounce(this.validateAddress, 600)
+  formUpdate: (ev) ->
+    addr = this.state.address
+    this.state.address[ev.target.name] = ev.target.value
+
+  nav: (dir) ->
+    this.context.syncOrder()
+    panes = ['service_type', 'service_address', 'ip_addresses', 'new_numbers', 'port_numbers', 'number_features', 'review']
+    index = _.indexOf(panes, this.props.route.path)
+    n = if dir == 'back' then -1 else 1
+    this.props.history.push("/order/#{this.props.params.ident}/#{panes[index+n]}")
+
+  getInitialState: ->
+    address:   {}
+    addresses: []
+
+  componentDidMount: ->
+    react = this
+    n = undefined
+    wait = setInterval((->
+      n ||= 0
+      n = n+1
+      clearInterval wait if n > 20
+      if _.get(react.context, 'order.service_addresses')
+        clearInterval wait
+        addr = _.get(react.context, 'order.service_addresses.default.full') || react.context.address ||
+          line_1: null
+          line_2: null
+          city:   null
+          state:  null
+          zip:    null
+        react.setState({ address: addr })
+        react.context.validateAddress(true) if _.get(react.context, 'order.service_addresses.default.full') || react.context.address
+    ), 100)
+
+  disabled: -> this.context.address || this.context.addressValidated
+
+  backClass: ->
+
+  continueClass: ->
+    'hidden' unless this.context.addressValidated
+
+  modifyClass: ->
+    'hidden' unless this.context.addressValidated
+
+  validateClass: ->
+    'hidden' if this.context.addressValidated
 
   render: ->
     react = this
-    addr = _.get(this.context, 'order.service_addresses.default.full') || this.context.address
-    disabled = this.context.address
-
     <div id='service-address'>
-      <div className='form'>
-        <div className='row'>
-          <div className='field full'>
-            <input disabled={disabled} name='line_1' placeholder='Line 1' onChange={this.formUpdate} value={addr && addr.line_1} />
+      <div className='viewport'>
+        <div className='form'>
+          <div className='row'>
+            <div className='field full'>
+              <input disabled={this.disabled()} name='line_1' placeholder='Line 1' onChange={this.formUpdate} value={this.state.address.line_1} />
+            </div>
+          </div>
+          <div className='row'>
+            <div className='field full'>
+              <input disabled={this.disabled()} name='line_2' placeholder='Line 2' onChange={this.formUpdate} value={this.state.address.line_2} />
+            </div>
+          </div>
+          <div className='row'>
+            <div className='field half'>
+              <input disabled={this.disabled()} name='city' placeholder='City' onChange={this.formUpdate} value={this.state.address.city} />
+            </div>
+            <div className='field eigth'>
+              <input disabled={this.disabled()} name='state' placeholder='State' onChange={this.formUpdate} value={this.state.address.state} />
+            </div>
+            <div className='field quarter'>
+              <input disabled={this.disabled()} name='zip' placeholder='Zip' onChange={this.formUpdate} value={this.state.address.zip} />
+            </div>
+          </div>
+          <div className='row addresses'>
+            {_.map(this.state.addresses, (address, i) ->
+              <div className='address' key={i} onClick={react.selectAddress.bind(null, address)}>{address.complete_address}</div>
+            )}
           </div>
         </div>
-        <div className='row'>
-          <div className='field full'>
-            <input disabled={disabled} name='line_2' placeholder='Line 2' onChange={this.formUpdate} value={addr && addr.line_2} />
-          </div>
-        </div>
-        <div className='row'>
-          <div className='field half'>
-            <input disabled={disabled} name='city' placeholder='City' onChange={this.formUpdate} value={addr && addr.city} />
-          </div>
-          <div className='field eigth'>
-            <input disabled={disabled} name='state' placeholder='State' onChange={this.formUpdate} onChange={this.formUpdate} value={addr && addr.state} />
-          </div>
-          <div className='field quarter'>
-            <input disabled={disabled} name='zip' placeholder='Zip' onChange={this.formUpdate} value={addr && addr.zip} />
-          </div>
-        </div>
-        <div className='row addresses'>
-          {_.map(this.state.addresses, (address, i) ->
-            <div className='address' key={i} onClick={react.selectAddress.bind(null, address)}>{address.complete_address}</div>
-          )}
-        </div>
+      </div>
+      <div className='foot'>
+        <ul className='links'>
+          <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.nav.bind(null, 'back')}>Back</a></li>
+          <li className={this.validateClass()}><a href='javascript:void(0)' onClick={this.validateAddress}>Validate</a></li>
+          <li className={this.modifyClass()}><a href='javascript:void(0)' onClick={this.modifyAddress}>Modify</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.nav.bind(null, 'continue')}>Continue</a></li>
+        </ul>
       </div>
     </div>

@@ -9,12 +9,14 @@ OrderComponent = React.createClass
 
   childContextTypes:
     validateAddress: React.PropTypes.func
+    addressValidated: React.PropTypes.bool
 
   getChildContext: ->
     validateAddress: this.validateAddress
+    addressValidated: this.state.addressValidated
 
   getInitialState: ->
-    addressValidated: true
+    addressValidated: false
 
   validateAddress: (bool) ->
     this.setState({ addressValidated: bool })
