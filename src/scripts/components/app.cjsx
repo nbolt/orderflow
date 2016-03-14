@@ -7,6 +7,7 @@ AppComponent = React.createClass
     order: React.PropTypes.object
     fetchOrder: React.PropTypes.func
     updateOrder: React.PropTypes.func
+    removeArrayElement: React.PropTypes.func
     syncOrder: React.PropTypes.func
 
   getChildContext: ->
@@ -15,6 +16,7 @@ AppComponent = React.createClass
     order: this.state.order || {}
     fetchOrder: this.fetchOrder
     updateOrder: this.updateOrder
+    removeArrayElement: this.removeArrayElement
     syncOrder: this.syncOrder
 
   getInitialState: ->
@@ -52,8 +54,14 @@ AppComponent = React.createClass
       data: JSON.stringify({ order: react.state.order })
 
   updateOrder: (values, sync=false) ->
-    order = this.state.order || {vs:{_enabled:false},sms:{_enabled:false}}
+    order = this.state.order || {vs:{_enabled:false,in:{trunk:{entries:[]}}},sms:{_enabled:false}}
     _.each(values, (v) -> _.set(order, v[0], v[1]))
+    this.setState({ order: order })
+    this.syncOrder() if sync
+
+  removeArrayElement: (values, sync=false) ->
+    order = this.state.order
+    _.each(values, (v) -> _.remove(_.get(order, v[0]), (e,i) -> v[1] == i))
     this.setState({ order: order })
     this.syncOrder() if sync
 

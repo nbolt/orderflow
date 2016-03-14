@@ -1,5 +1,3 @@
-Link = ReactRouter.Link
-
 ExistingNumbersComponent = React.createClass
   contextTypes:
     order: React.PropTypes.object

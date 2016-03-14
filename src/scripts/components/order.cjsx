@@ -8,10 +8,12 @@ OrderComponent = React.createClass
     syncOrder: React.PropTypes.func
 
   childContextTypes:
+    nav: React.PropTypes.func
     validateAddress: React.PropTypes.func
     addressValidated: React.PropTypes.bool
 
   getChildContext: ->
+    nav: this.nav
     validateAddress: this.validateAddress
     addressValidated: this.state.addressValidated
 
@@ -23,6 +25,19 @@ OrderComponent = React.createClass
 
   componentDidMount: ->
     this.context.fetchOrder()
+
+  nav: (dir, path) ->
+    this.context.syncOrder()
+    panes = switch
+      when _.get(this.context, 'order.sms._enabled')
+        ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+      when _.get(this.context, 'order.vs._enabled')
+        ['service_type', 'service_address', 'ip_addresses', 'new_numbers', 'port_numbers', 'number_features', 'review']
+      else
+        ['service_type']
+    index = _.indexOf(panes, path)
+    n = if dir == 'back' then -1 else 1
+    this.props.history.push("/order/#{this.props.params.ident}/#{panes[index+n]}")
 
   linkClass: (path) ->
     order = this.context.order

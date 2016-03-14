@@ -1,9 +1,8 @@
-Link = ReactRouter.Link
-
 ServiceAddressComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
     order: React.PropTypes.object
+    nav: React.PropTypes.func
     updateOrder: React.PropTypes.func
     syncOrder: React.PropTypes.func
     address: React.PropTypes.object
@@ -38,13 +37,6 @@ ServiceAddressComponent = React.createClass
     addr = this.state.address
     addr[ev.target.name] = ev.target.value
     this.setState({ address: addr })
-
-  nav: (dir) ->
-    this.context.syncOrder()
-    panes = ['service_type', 'service_address', 'ip_addresses', 'new_numbers', 'port_numbers', 'number_features', 'review']
-    index = _.indexOf(panes, this.props.route.path)
-    n = if dir == 'back' then -1 else 1
-    this.props.history.push("/order/#{this.props.params.ident}/#{panes[index+n]}")
 
   getInitialState: ->
     address:   {}
@@ -117,10 +109,10 @@ ServiceAddressComponent = React.createClass
       </div>
       <div className='foot'>
         <ul className='links'>
-          <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.nav.bind(null, 'back')}>Back</a></li>
+          <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
           <li className={this.validateClass()}><a href='javascript:void(0)' onClick={this.validateAddress}>Validate</a></li>
           <li className={this.modifyClass()}><a href='javascript:void(0)' onClick={this.modifyAddress}>Modify</a></li>
-          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.nav.bind(null, 'continue')}>Continue</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
         </ul>
       </div>
     </div>

@@ -1,5 +1,3 @@
-Link = ReactRouter.Link
-
 ReviewComponent = React.createClass
   contextTypes:
     order: React.PropTypes.object

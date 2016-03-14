@@ -1,5 +1,3 @@
-Link = ReactRouter.Link
-
 ListComponent = React.createClass
   componentDidMount: ->
     react = this

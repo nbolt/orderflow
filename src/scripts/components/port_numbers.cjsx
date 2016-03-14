@@ -1,5 +1,3 @@
-Link = ReactRouter.Link
-
 PortNumbersComponent = React.createClass
   contextTypes:
     order: React.PropTypes.object
