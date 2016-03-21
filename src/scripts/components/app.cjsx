@@ -54,7 +54,7 @@ AppComponent = React.createClass
       data: JSON.stringify({ order: react.state.order })
 
   updateOrder: (values, sync=false) ->
-    order = this.state.order || {vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,in:{trunk:{entries:[]}}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
+    order = this.state.order || {vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,in:{all:[],trunk:{entries:[]}}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
     _.each(values, (v) -> _.set(order, v[0], v[1]))
     this.setState({ order: order })
     this.syncOrder() if sync
