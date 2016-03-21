@@ -87,10 +87,6 @@ NewNumbersComponent = React.createClass
     didCity: null
     didState: 'NY'
 
-  componentDidMount: ->
-    react = this
-    window.wat = react.addNumbers
-
   render: ->
     react = this
     <div id='new-numbers'>

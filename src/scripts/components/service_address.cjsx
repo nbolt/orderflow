@@ -90,6 +90,18 @@ ServiceAddressComponent = React.createClass
     classNames 'address',
       selected: react.state.selectedAddress == address
 
+  validatedClass: ->
+    react = this
+    classNames 'validated',
+      hidden: !react.context.addressValidated
+
+  address: ->
+    addr = _.get(this.context, 'order.service_addresses.default.full')
+    if addr
+      "#{addr.line_1} #{addr.line_2} #{addr.city} #{addr.state} #{addr.zip}"
+    else
+      null
+
   render: ->
     react = this
     <div id='service-address'>
@@ -124,6 +136,10 @@ ServiceAddressComponent = React.createClass
               <input disabled={this.disabled()} name='zip' placeholder='Zip' onChange={this.formUpdate} value={this.state.address.zip} />
             </div>
           </div>
+        </div>
+        <div className={this.validatedClass()}>
+          <div className='label'>Validated Address:</div>
+          <div className='address'>{this.address()}</div>
         </div>
       </div>
       <div className='foot'>

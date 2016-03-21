@@ -132,58 +132,10 @@ input
           display: none
           &.selected
             display: block
-
-#new-numbers
-  .tabs
-    .tab
-      display: inline-block
-      padding: 8px 12px
-      border: thin solid #ccc
-      border-right: 0
-      &.selected
-        background-color: #eee
-      &:last-child
-        border-right: thin solid #ccc
-      &:hover
-        cursor: pointer
-        background-color: #eee
-  .tab-content
-    margin-top: 40px
-    .column
-      position: relative
-      display: inline-block
-      vertical-align: top
-      width: 33%
-      height: 320px
-      border-right: thin solid #ccc
-      .numbers
-        font-size: 0.9em
-        margin: 20px 0 0 20px
-        .number
-          margin-bottom: 10px
-          &:hover
-            cursor: pointer
-            color: #999
-      .loading
-        text-align: center
-        color: #999
-        position: absolute
-        bottom: 24px
-        left: 50%
-        width: 70px
-        margin-left: -35px
-      .title
-        text-align: center
-      .search-panes
-        .Select
-          width: 188px
-          margin-left: 20px
-      .search-tabs
-        text-align: center
-        margin: 20px 0
-        .search-tab
+    #new-numbers
+      .tabs
+        .tab
           display: inline-block
-          font-size: 0.9em
           padding: 8px 12px
           border: thin solid #ccc
           border-right: 0
@@ -194,6 +146,60 @@ input
           &:hover
             cursor: pointer
             background-color: #eee
+      .tab-content
+        margin-top: 40px
+        .column
+          position: relative
+          display: inline-block
+          vertical-align: top
+          width: 33%
+          height: 320px
+          border-right: thin solid #ccc
+          .numbers
+            font-size: 0.9em
+            margin: 20px 0 0 20px
+            .number
+              margin-bottom: 10px
+              &:hover
+                cursor: pointer
+                color: #999
+          .loading
+            text-align: center
+            color: #999
+            position: absolute
+            bottom: 24px
+            left: 50%
+            width: 70px
+            margin-left: -35px
+          .title
+            text-align: center
+          .search-panes
+            .Select
+              width: 188px
+              margin-left: 20px
+          .search-tabs
+            text-align: center
+            margin: 20px 0
+            .search-tab
+              display: inline-block
+              font-size: 0.9em
+              padding: 8px 12px
+              border: thin solid #ccc
+              border-right: 0
+              &.selected
+                background-color: #eee
+              &:last-child
+                border-right: thin solid #ccc
+              &:hover
+                cursor: pointer
+                background-color: #eee
+    #service-address
+      .validated
+        margin-top: 60px   
+        .label
+          margin-bottom: 10px
+          color: #539770
+          font-weight: 600
 
 .ReactModal__Overlay
   opacity: 0
