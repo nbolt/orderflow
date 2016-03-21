@@ -8,14 +8,14 @@ border-box-html()
 gray = #7C8082
 
 .hidden
-  display: none
+  display: none !important
 
 header
   padding: 20px
   .right
     float: right
     .nav
-      margin-bottom: 10px
+      aargin-bottom: 10px      
       &.links
         li
           upcase()
@@ -105,16 +105,16 @@ input
         .foot
           height: 20px
     #service-type
-      .call_paths, .message-volume
+      .call_paths, .message-volume, .call_rates
         margin: 20px 0 0 16px
+        label
+          display: inline-block
+          width: 240px
         input
           margin-right: 20px
-      .call_paths
-        input
-          width: 120px
-      .message-volume
-        input
-          width: 160px
+          width: 120px !important
+      .call_rates
+        margin-top: 0 !important
       .options
         .type
           display: inline-block
@@ -133,14 +133,33 @@ input
           display: none
           &.selected
             display: block
-    #service-address
-      .row
-        &.addresses
-          height: 130px
-          margin-top: 12px
-          overflow: hidden
-          .address
-            margin: 6px
-            &:hover
-              cursor: pointer
-              color: gray
+
+.ReactModal__Overlay
+  opacity: 0
+  &.ReactModal__Overlay--after-open
+    opacity: 1
+    transition: opacity 150ms ease-out
+  .ReactModal__Content
+    top: 200px !important
+    bottom: inherit !important
+    left: 50% !important
+    right: inherit !important
+    width: 600px
+    height: 300px
+    margin-left: -300px
+    transform: scale(0.5) rotateX(-30deg)
+    &.ReactModal__Content--after-open
+      transform: scale(1) rotateX(0deg) !important
+      transition: all 150ms ease-in
+    .addresses
+      height: 130px
+      margin-top: 12px
+      overflow: hidden
+      .address
+        margin: 6px
+        &:hover
+          cursor: pointer
+          color: gray
+        &.selected
+          font-weight: 600
+          color: #81C784

@@ -38,22 +38,30 @@ gulp.task('scripts', function() {
     .pipe(notify({ message: 'Scripts task complete' }));
 });
 
-gulp.task('styles', function() {
+gulp.task('stylus', function() {
   return gulp.src('src/styles/**/**.styl')
     .pipe(accord('stylus', {use: axis()}))
     .pipe(concat('master.css'))
+    .pipe(gulp.dest('dist/styles'))
+    .pipe(notify({ message: 'Stylus task complete' }));
+});
+
+gulp.task('styles', function() {
+  return gulp.src('src/styles/**/**.css')
+    .pipe(concat('vendor.css'))
     .pipe(gulp.dest('dist/styles'))
     .pipe(notify({ message: 'Styles task complete' }));
 });
 
 gulp.task('default', ['clean'], function() {
-  gulp.start('images', 'scripts', 'components', 'styles');
+  gulp.start('images', 'scripts', 'components', 'styles', 'stylus');
 });
 
 gulp.task('watch', function() {
   gulp.watch('src/scripts/components/*.cjsx', ['components'])
   gulp.watch('src/scripts/js**/*.js', ['scripts'])
-  gulp.watch('src/styles/**/**.styl', ['styles'])
+  gulp.watch('src/styles/**/**.styl', ['stylus'])
+  gulp.watch('src/styles/**/**.css', ['styles'])
   gulp.watch('src/images/**/*', ['images'])
   livereload.listen();
   gulp.watch(['dist/**']).on('change', livereload.changed);

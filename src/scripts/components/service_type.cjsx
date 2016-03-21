@@ -7,6 +7,12 @@ ServiceTypeComponent = React.createClass
 
   updateInput: (path, ev) ->
     this.context.updateOrder([[path, parseInt(ev.target.value) || null]])
+ 
+  hidden: (type) ->
+    selected     = _.get(this.context.order, 'vs._enabled') || _.get(this.context.order, 'sms._enabled')
+    selectedType = _.get(this.context.order, 'vs._enabled') && 'vs' || _.get(this.context.order, 'sms._enabled') && 'sms'
+    classNames
+      hidden: selected && selectedType != type
 
   selected: (path) ->
     classNames
@@ -19,10 +25,11 @@ ServiceTypeComponent = React.createClass
 
     hidden = true if !_.get(this.context, 'order.vs._enabled') && !_.get(this.context, 'order.sms._enabled')
     hidden = true if _.get(this.context, 'order.vs._enabled') && !_.get(this.context, 'order.vs._service_direction.in') && !_.get(this.context, 'order.vs._service_direction.out') && !_.get(this.context, 'order.vs._service_direction.bi')
-    hidden = true if _.get(this.context, 'order.vs._enabled') && !_.get(this.context, 'order.vs.in.call_paths')
+    hidden = true if _.get(this.context, 'order.vs._enabled') && !_.get(this.context, 'order.vs.call_paths')
+    hidden = true if _.get(this.context, 'order.vs._enabled') && (!_.get(this.context, 'order.vs._cpsin') || !_.get(this.context, 'order.vs._cpsout'))
 
     hidden = true if _.get(this.context, 'order.sms._enabled') && !_.get(this.context, 'order.sms._service_type.phone_number') && !_.get(this.context, 'order.sms._service_type.shortcode')
-    hidden = true if _.get(this.context, 'order.sms._enabled') && (!_.get(this.context, 'order.sms.capacity.in') || !_.get(this.context, 'order.sms.capacity.out'))
+    hidden = true if _.get(this.context, 'order.sms._enabled') && (!_.get(this.context, 'order.sms._mpsin') || !_.get(this.context, 'order.sms._mpsout'))
 
     'hidden' if hidden
 
@@ -30,9 +37,9 @@ ServiceTypeComponent = React.createClass
     <div id='service-type'>
       <div className='viewport'>
         <div className='options'>
-          <div className={this.selected('vs._enabled') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs._enabled', true], ['sms._enabled', false]], false)}>Voice</div>
-          <div className={this.selected('sms._enabled') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs._enabled', false], ['sms._enabled', true]], false)}>SMS</div>
-          <div className='type'>WebRTC</div>
+          <div className={this.selected('vs._enabled') + this.hidden('vs') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs._enabled', true], ['sms._enabled', false]], false)}>Voice</div>
+          <div className={this.selected('sms._enabled') + this.hidden('sms') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs._enabled', false], ['sms._enabled', true]], false)}>SMS</div>
+          <div className={this.hidden('webrtc') + ' type'}>WebRTC</div>
         </div>
         <div className='type-containers'>
           <div className={this.selected('vs._enabled') + ' vs container'}>
@@ -42,7 +49,20 @@ ServiceTypeComponent = React.createClass
               <div className={this.selected('vs._service_direction.bi') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs._service_direction.out', false], ['vs._service_direction.in', false], ['vs._service_direction.bi', true]], false)}>Bidirectional</div>
             </div>
             <div className='call_paths'>
-              <input value={_.get(this.context, 'order.vs.in.call_paths')} onChange={this.updateInput.bind(null, 'vs.in.call_paths')} type='text' placeholder='Call Paths'/>
+              <div className='field'>
+                <label>Call Paths</label>
+                <input value={_.get(this.context, 'order.vs.call_paths')} onChange={this.updateInput.bind(null, 'vs.call_paths')} type='text'/>
+              </div>
+            </div>
+            <div className='call_rates'>
+              <div className='field'>
+                <label>Calls / second (CPS) IN</label>
+                <input value={_.get(this.context, 'order.vs._cpsin')} onChange={this.updateInput.bind(null, 'vs._cpsin')} type='text'/>
+              </div>
+              <div className='field'>
+                <label>Calls / second (CPS) OUT</label>
+                <input value={_.get(this.context, 'order.vs._cpsout')} onChange={this.updateInput.bind(null, 'vs._cpsout')} type='text'/>
+              </div>
             </div>
           </div>
           <div className={this.selected('sms._enabled') + ' sms container'}>
@@ -51,8 +71,14 @@ ServiceTypeComponent = React.createClass
               <div className={this.selected('sms._service_type.shortcode') + ' type'} onClick={this.context.updateOrder.bind(null, [['sms._service_type.phone_number', false], ['sms._service_type.shortcode', true]])}>Shortcode</div>
             </div>
             <div className='message-volume'>
-              <input value={_.get(this.context, 'order.sms.capacity.in')} onChange={this.updateInput.bind(null, 'sms.capacity.in')} type='text' placeholder='Messages/sec in'/>
-              <input value={_.get(this.context, 'order.sms.capacity.out')} onChange={this.updateInput.bind(null, 'sms.capacity.out')} type='text' placeholder='Messages/sec out'/>
+              <div className='field'>
+                <label>Messages / second (MPS) IN</label>
+                <input value={_.get(this.context, 'order.sms._mpsin')} onChange={this.updateInput.bind(null, 'sms._mpsin')} type='text'/>
+              </div>
+              <div className='field'>
+                <label>Messages / second (MPS) OUT</label>
+                <input value={_.get(this.context, 'order.sms._mpsout')} onChange={this.updateInput.bind(null, 'sms._mpsout')} type='text'/>
+              </div>
             </div>
           </div>
         </div>

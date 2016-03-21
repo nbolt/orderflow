@@ -1,3 +1,5 @@
+Modal = ReactModal
+
 ServiceAddressComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
@@ -22,15 +24,16 @@ ServiceAddressComponent = React.createClass
       success: (rsp) ->
         if rsp[0]
           addresses = _.filter(rsp, (addr) -> addr.city && addr.state && addr.postal_code && addr.street_number && addr.route)
-          react.setState({ addresses: addresses })
+          if addresses[0]
+            react.setState({ addresses: addresses, modal: true })
 
   selectAddress: (address) ->
     addr = { line_1: "#{address.street_number} #{address.route}", line_2: address.subpremise, city: address.city, state: address.state, zip: address.postal_code }
     this.context.updateOrder([['service_addresses.default.full', addr]])
     this.context.validateAddress true
-    this.setState({ addresses: [] })
+    this.setState({ addresses: [], modal: false })
 
-  modifyAddress: ->
+  releaseAddress: ->
     this.context.validateAddress false
 
   formUpdate: (ev) ->
@@ -39,6 +42,7 @@ ServiceAddressComponent = React.createClass
     this.setState({ address: addr })
 
   getInitialState: ->
+    modal: false
     address:   {}
     addresses: []
 
@@ -68,15 +72,35 @@ ServiceAddressComponent = React.createClass
   continueClass: ->
     'hidden' unless this.context.addressValidated
 
-  modifyClass: ->
-    'hidden' unless this.context.addressValidated
-
   validateClass: ->
     'hidden' if this.context.addressValidated
+
+  releaseClass: ->
+    react = this
+    classNames
+      hidden: react.context.address || !react.context.addressValidated
+
+  verifyClass: -> 
+    react = this
+    classNames 'remodal-confirm',
+      hidden: !react.state.selectedAddress
+
+  addrClass: (address) -> 
+    react = this
+    classNames 'address',
+      selected: react.state.selectedAddress == address
 
   render: ->
     react = this
     <div id='service-address'>
+      <Modal isOpen={this.state.modal}>
+        <h1>Address Verification</h1>
+        <div className='addresses'>
+          {_.map(this.state.addresses, (address, i) ->
+            <div className={react.addrClass(address)} key={i} onClick={react.selectAddress.bind(null, address)}>{address.complete_address}</div>
+          )}
+        </div>
+      </Modal>
       <div className='viewport'>
         <div className='form'>
           <div className='row'>
@@ -100,18 +124,13 @@ ServiceAddressComponent = React.createClass
               <input disabled={this.disabled()} name='zip' placeholder='Zip' onChange={this.formUpdate} value={this.state.address.zip} />
             </div>
           </div>
-          <div className='row addresses'>
-            {_.map(this.state.addresses, (address, i) ->
-              <div className='address' key={i} onClick={react.selectAddress.bind(null, address)}>{address.complete_address}</div>
-            )}
-          </div>
         </div>
       </div>
       <div className='foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
           <li className={this.validateClass()}><a href='javascript:void(0)' onClick={this.validateAddress}>Validate</a></li>
-          <li className={this.modifyClass()}><a href='javascript:void(0)' onClick={this.modifyAddress}>Modify</a></li>
+          <li className={this.releaseClass()}><a href='javascript:void(0)' onClick={this.releaseAddress}>Release</a></li>
           <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
         </ul>
       </div>
