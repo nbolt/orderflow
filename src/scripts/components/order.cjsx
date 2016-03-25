@@ -32,8 +32,7 @@ OrderComponent = React.createClass
       when _.get(this.context, 'order.sms._enabled')
         ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
       when _.get(this.context, 'order.vs._enabled')
-        # ['service_type', 'service_address', 'ip_addresses', 'new_numbers', 'port_numbers', 'number_features', 'review']
-        ['service_type', 'service_address', 'new_numbers', 'port_numbers', 'number_features', 'review']
+        ['service_type', 'service_address', 'ip_addresses', 'new_numbers', 'port_numbers', 'number_features', 'review']
       else
         ['service_type']
     index = _.indexOf(panes, path)
