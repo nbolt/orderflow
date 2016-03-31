@@ -84,8 +84,8 @@ NewNumbersComponent = React.createClass
     selected: []
     tab: null
     didSearchTab: null
-    didCity: null
-    didState: 'NY'
+    didCity: 'CISCO'
+    didState: 'TX'
 
   render: ->
     react = this

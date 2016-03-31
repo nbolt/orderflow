@@ -37,7 +37,7 @@ ul
           text-decoration: underline
       .em
         color: #444
-      
+
 nav
   li
     a
@@ -73,7 +73,20 @@ input
   > nav
     padding-bottom: 4px
     border-bottom: thin solid #ccc
-  
+
+.options
+  .type
+    display: inline-block
+    vertical-align: top
+    padding: 8px 12px 7px
+    border-radius: 5px
+    margin: 0 16px
+    border: thin solid #ccc
+    &:hover
+      cursor: pointer
+    &:hover, &.selected
+      background-color: #eee
+
 #order-component
   #form
     margin-top: 20px
@@ -115,18 +128,6 @@ input
           width: 120px !important
       .call_rates
         margin-top: 0 !important
-      .options
-        .type
-          display: inline-block
-          vertical-align: top
-          padding: 8px 12px 7px
-          border-radius: 5px
-          margin: 0 16px
-          border: thin solid #ccc
-          &:hover
-            cursor: pointer
-          &:hover, &.selected
-            background-color: #eee
       .type-containers
         margin-top: 20px
         .container
@@ -204,17 +205,43 @@ input
           color: #539770
           font-weight: 600
     #ip-addresses
+      .routing-method
+        margin-top: 36px
+        .title, .options
+          display: inline-block
+          vertical-align: top
+        .title
+          margin: 8px 20px 0 0
       .ip-containers
-        position: relative
+        height: 250px
+        overflow-y: scroll
+        width: 103%
         .div
           position: absolute
-          height: 100%
-          left: 300px
           border-right: thin solid #ccc
+          left: 300px
+          top: 30px
+          bottom: 0
+        .directions
+          position: relative
         .direction
           display: inline-block
           vertical-align: top
           width: 340px
+          .check
+            height: 34px
+            label
+              font-size: 0.9em
+              input
+                margin-right: 10px
+          > .title
+            font-size: 1.3em
+            border-bottom: thin solid #ccc
+            margin-bottom: 20px
+            padding-bottom: 10px
+            text-align: center
+          &.out > .title
+            width: 260px
           .columns
             .column
               display: inline-block
