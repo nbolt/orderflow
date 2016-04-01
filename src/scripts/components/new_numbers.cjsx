@@ -75,7 +75,6 @@ NewNumbersComponent = React.createClass
       hidden: !react.state.loading
 
   didCities: [
-    { value: 'ALBANY', label: 'Albany, NY' },
     { value: 'CISCO', label: 'Cisco, TX' }
   ]
 

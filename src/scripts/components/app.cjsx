@@ -56,6 +56,7 @@ AppComponent = React.createClass
   updateOrder: (values, sync=false) ->
     order = this.state.order || {vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,in:{all:[],trunk:{entries:[]}}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
     _.each(values, (v) -> _.set(order, v[0], v[1]))
+    _.set(order, 'vs.in.trunk.inbound_checked', false) unless order.vs._service_direction.bi
     this.setState({ order: order })
     this.syncOrder() if sync
 

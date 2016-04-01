@@ -62,7 +62,7 @@ IPAddressesComponent = React.createClass
   continueClass: -> 'hidden' if !this.validateFields() || this.numIps('out') < 2 || this.numIps('in') < 2 || (!_.get(this.context.order, 'vs.in.trunk.distro.type.hunt') && !_.get(this.context.order, 'vs.in.trunk.distro.type.pd') && !_.get(this.context.order, 'vs.in.trunk.distro.type.rr'))
 
   ipClass: (dir) -> classNames 'direction', dir,
-    hidden: !_.get(this.context.order, "vs._service_direction[#{dir}]") && !_.get(this.context.order, "vs._service_direction.bi")
+    invisible: !_.get(this.context.order, "vs._service_direction[#{dir}]") && !_.get(this.context.order, "vs._service_direction.bi")
 
   validateFields: ->
     react = this
@@ -107,9 +107,6 @@ IPAddressesComponent = React.createClass
       invalid: !react.validateField(field, dir, i) && i != (react.numIps(dir)-1)
 
   weightInput: -> !_.get(this.context.order, 'vs.in.trunk.distro.type.pd')
-
-  componentDidMount: ->
-    this.updateRouting()
 
   render: ->
     react = this
