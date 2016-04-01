@@ -9,39 +9,103 @@ NewNumbersComponent = React.createClass
     selected = _.map(['1234567890'], (n) -> { number: n, type: 'did',  })
     this.context.updateOrder([['vs.in.all', selected]])
 
-  searchNumbers: (city=false, state=false) ->
+  searchNumbers: ->
     react = this
-    react.setState({ loading: true })
-    $.ajax
-      url: 'http://staging.apeironsys.com/api/number_search'
-      method: 'GET'
-      headers: { Authorization: 'Bearer ' + react.context.token }
-      dataType: 'json'
-      data:
-        list_id: react.context.order.id
-        rate_center: city || react.state.didCity
-        state: state || react.state.didState
-      success: (rsp) ->
-        react.setState({ loading: false })
-        react.setState({ numbers: rsp }) if rsp[0]
+    data = { list_id: this.context.order.id }
+    switch this.state.tab
+      when 'did'
+        switch this.state.did.search
+          when 'city'
+            data.rate_center = this.state.did.city
+            data.state       = this.state.did.state
+          when 'npa'
+            data.npa = this.state.did.npa
+            data.nxx = this.state.did.nxx
+      when 'tfn'
+        switch this.state.tfn.search
+          when 'npa'
+            data.npa = this.state.tfn.npa
+            data.nxx = ''
+    if data.rate_center && data.state || this.state.tab == 'did' && data.npa && data.nxx || this.state.tab == 'tfn' && data.npa
+      react.setState({ loading: true })
+      $.ajax
+        url: 'http://staging.apeironsys.com/api/number_search'
+        method: 'GET'
+        headers: { Authorization: 'Bearer ' + react.context.token }
+        dataType: 'json'
+        data: data
+        success: (rsp) ->
+          react.setState({ loading: false })
+          if rsp[0]
+            switch react.state.tab
+              when 'did'
+                did = react.state.did
+                did.numbers = rsp
+                react.setState({ did: did })
+              when 'tfn'
+                tfn = react.state.tfn
+                tfn.numbers = rsp
+                react.setState({ tfn: tfn })
 
   refreshNumbers: -> this.searchNumbers()
 
-  selectNumber: (number) ->
-    numbers  = _.filter(this.state.numbers, (n) -> n != number)
-    selected = _.concat(this.state.selected, number)
-    this.setState({ numbers: numbers, selected: selected })
+  didSelectNumber: (number) ->
+    numbers      = _.filter(this.state.did.numbers, (n) -> n != number)
+    selected     = _.concat(this.state.did.selected, number)
+    did          = this.state.did
+    did.numbers  = numbers
+    did.selected = selected
+    this.setState({ did: did })
 
-  removeNumber: (number) ->
-    selected = _.filter(this.state.selected, (n) -> n != number)
-    numbers  = _.concat(this.state.numbers, number)
-    this.setState({ numbers: numbers, selected: selected })
+  tfnSelectNumber: (number) ->
+    numbers      = _.filter(this.state.tfn.numbers, (n) -> n != number)
+    selected     = _.concat(this.state.tfn.selected, number)
+    tfn          = this.state.tfn
+    tfn.numbers  = numbers
+    tfn.selected = selected
+    this.setState({ tfn: tfn })
 
-  didCityChange: (data) -> this.setState({ didCity: data.value }); this.searchNumbers(data.value)
+  didRemoveNumber: (number) ->
+    selected     = _.filter(this.state.did.selected, (n) -> n != number)
+    numbers      = _.concat(this.state.did.numbers, number)
+    did          = this.state.did
+    did.numbers  = numbers
+    did.selected = selected
+    this.setState({ did: did })
+
+  tfnRemoveNumber: (number) ->
+    selected     = _.filter(this.state.tfn.selected, (n) -> n != number)
+    numbers      = _.concat(this.state.tfn.numbers, number)
+    tfn          = this.state.tfn
+    tfn.numbers  = numbers
+    tfn.selected = selected
+    this.setState({ tfn: tfn })
 
   tab: (pane) -> this.setState({ tab: pane })
 
-  didSearchTab: (pane) -> this.setState({ didSearchTab: pane })
+  didFieldChange: (field, data) ->
+    did   = this.state.did
+    did[field] = data && data.value
+    this.setState({ did: did })
+    this.searchNumbers()
+
+  tfnFieldChange: (field, data) ->
+    tfn   = this.state.tfn
+    tfn[field] = data && data.value
+    this.setState({ tfn: tfn })
+    this.searchNumbers()
+
+  didSearchTab: (pane) ->
+    did = this.state.did
+    did.search = pane
+    this.setState({ did: did })
+    this.searchNumbers()
+
+  tfnSearchTab: (pane) ->
+    tfn = this.state.tfn
+    tfn.search = pane
+    this.setState({ tfn: tfn })
+    this.searchNumbers()
 
   backClass: ->
 
@@ -62,30 +126,70 @@ NewNumbersComponent = React.createClass
   didSearchPaneClass: (pane) ->
     react = this
     classNames 'did-search-pane', pane,
-      hidden: !react.state.tab || react.state.didSearchTab != pane
+      hidden: !react.state.tab || react.state.did.search != pane
 
   didSearchTabClass: (tab) ->
     react = this
     classNames 'search-tab',
-      selected: tab == react.state.didSearchTab
+      selected: tab == react.state.did.search
+
+  tfnSearchPaneClass: (pane) ->
+    react = this
+    classNames 'tfn-search-pane', pane,
+      hidden: !react.state.tab || react.state.tfn.search != pane
+
+
+  tfnSearchTabClass: (tab) ->
+    react = this
+    classNames 'search-tab',
+      selected: tab == react.state.tfn.search
+
 
   loadingClass: ->
     react = this
     classNames 'loading',
       hidden: !react.state.loading
 
-  didCities: [
-    { value: 'CISCO', label: 'Cisco, TX' }
+  didStates: -> [
+    { value: 'TX', label: 'Texas' }
   ]
+
+  didCities: ->
+    switch this.state.did.state
+      when 'TX'
+        [
+          { value: 'Cisco', label: 'Cisco' }
+        ]
+
+  didNpas: ->
+    _.map([818, 562], (n) -> { value: n, label: n })
+
+  didNxxs: ->
+    switch this.state.did.npa
+      when 818
+        _.map([338, 661], (n) -> { value: n, label: n })
+      when 562
+        _.map([391, 742], (n) -> { value: n, label: n })
+
+  tfnNpas: ->
+    _.map([888], (n) -> { value: n, label: n })
 
   getInitialState: ->
     loading: false
-    numbers: []
-    selected: []
     tab: null
-    didSearchTab: null
-    didCity: 'CISCO'
-    didState: 'TX'
+    did:
+      numbers: []
+      selected: []
+      search: null
+      city: null
+      state: null
+      npa: null
+      nxx: null
+    tfn:
+      numbers: []
+      selected: []
+      search: null
+      npa: null
 
   render: ->
     react = this
@@ -104,9 +208,12 @@ NewNumbersComponent = React.createClass
             </div>
             <div className='search-panes'>
               <div className={this.didSearchPaneClass('city')}>
-                <Select value={this.state.didCity} options={this.didCities} onChange={this.didCityChange}/>
+                <Select value={this.state.did.state} options={this.didStates()} onChange={this.didFieldChange.bind(null, 'state')}/>
+                <Select value={this.state.did.city} options={this.didCities()} onChange={this.didFieldChange.bind(null, 'city')}/>
               </div>
               <div className={this.didSearchPaneClass('npa')}>
+                <Select value={this.state.did.npa} options={this.didNpas()} onChange={this.didFieldChange.bind(null, 'npa')}/>
+                <Select value={this.state.did.nxx} options={this.didNxxs()} onChange={this.didFieldChange.bind(null, 'nxx')}/>
               </div>
             </div>
             <div className={this.loadingClass()}>loading...</div>
@@ -114,16 +221,16 @@ NewNumbersComponent = React.createClass
           <div className='column results'>
             <div className='title'>Search Results</div>
             <div className='numbers'>
-              {_.map(this.state.numbers, (number, i) ->
-                <div className='number' key={i} onClick={react.selectNumber.bind(null, number)}>{number}</div>
+              {_.map(this.state.did.numbers, (number, i) ->
+                <div className='number' key={i} onClick={react.didSelectNumber.bind(null, number)}>{number}</div>
               )}
             </div>
           </div>
           <div className='column selection'>
             <div className='title'>Selected Numbers</div>
             <div className='numbers'>
-              {_.map(this.state.selected, (number, i) ->
-                <div className='number' key={i} onClick={react.removeNumber.bind(null, number)}>{number}</div>
+              {_.map(this.state.did.selected, (number, i) ->
+                <div className='number' key={i} onClick={react.didRemoveNumber.bind(null, number)}>{number}</div>
               )}
             </div>
           </div>
@@ -131,12 +238,31 @@ NewNumbersComponent = React.createClass
         <div className={this.paneClass('tfn')}>
           <div className='column parameters'>
             <div className='title'>Search Criteria</div>
+            <div className='search-tabs'>
+              <div className={this.tfnSearchTabClass('npa')} onClick={this.tfnSearchTab.bind(null, 'npa')}>NPA / NXX</div>
+            </div>
+            <div className='search-panes'>
+              <div className={this.tfnSearchPaneClass('npa')}>
+                <Select value={this.state.tfn.npa} options={this.tfnNpas()} onChange={this.tfnFieldChange.bind(null, 'npa')}/>
+              </div>
+            </div>
+            <div className={this.loadingClass()}>loading...</div>
           </div>
           <div className='column results'>
             <div className='title'>Search Results</div>
+            <div className='numbers'>
+              {_.map(this.state.tfn.numbers, (number, i) ->
+                <div className='number' key={i} onClick={react.tfnSelectNumber.bind(null, number)}>{number}</div>
+              )}
+            </div>
           </div>
           <div className='column selection'>
             <div className='title'>Selected Numbers</div>
+            <div className='numbers'>
+              {_.map(this.state.tfn.selected, (number, i) ->
+                <div className='number' key={i} onClick={react.tfnRemoveNumber.bind(null, number)}>{number}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>

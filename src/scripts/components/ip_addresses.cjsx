@@ -106,6 +106,11 @@ IPAddressesComponent = React.createClass
     classNames
       invalid: !react.validateField(field, dir, i) && i != (react.numIps(dir)-1)
 
+  routingClass: (field, dir, i) ->
+    react = this
+    classNames 'routing-method',
+      hidden: _.get(react.context.order, 'vs._service_direction.out')
+
   weightInput: -> !_.get(this.context.order, 'vs.in.trunk.distro.type.pd')
 
   render: ->
@@ -187,7 +192,7 @@ IPAddressesComponent = React.createClass
             </div>
           </div>
         </div>
-        <div className='routing-method'>
+        <div className={this.routingClass()}>
           <div className='title'>Inbound Routing Method:</div>
           <div className='options'>
             <div className={this.selected('vs.in.trunk.distro.type.hunt') + ' type'} onClick={this.updateRouting.bind(null, 'hunt')}>Hunt</div>
