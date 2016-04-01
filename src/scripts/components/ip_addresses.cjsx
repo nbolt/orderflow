@@ -43,10 +43,52 @@ IPAddressesComponent = React.createClass
 
   backClass: ->
 
-  continueClass: -> 'hidden' if this.numIps('out') < 2 || this.numIps('in') < 2 || (!_.get(this.context.order, 'vs.in.trunk.distro.type.hunt') && !_.get(this.context.order, 'vs.in.trunk.distro.type.pd') && !_.get(this.context.order, 'vs.in.trunk.distro.type.rr'))
+  continueClass: -> 'hidden' if !this.validateFields() || this.numIps('out') < 2 || this.numIps('in') < 2 || (!_.get(this.context.order, 'vs.in.trunk.distro.type.hunt') && !_.get(this.context.order, 'vs.in.trunk.distro.type.pd') && !_.get(this.context.order, 'vs.in.trunk.distro.type.rr'))
 
   ipClass: (dir) -> classNames 'direction', dir,
     hidden: !_.get(this.context.order, "vs._service_direction[#{dir}]") && !_.get(this.context.order, "vs._service_direction.bi")
+
+  validateFields: ->
+    react = this
+    validated = true
+    _.each(['out', 'in'], (dir) ->
+      _.each(['ip', 'mask', 'port', 'weight'], (field) ->
+        _.times(react.numIps(dir) - 1, (i) ->
+          validated = false unless react.validateField(field, dir, i)
+        )
+      )
+    )
+    validated
+
+  validateField: (field, dir, i) ->
+    react = this
+    switch field
+      when 'ip'
+        ip = _.get(this.context.order, "vs.#{dir}.trunk.entries[#{i}].ip")
+        nums = _.map(_.split(ip, '.'), (str) -> parseInt str)
+        nums[0] > 0 && nums[0] < 256 && nums[1] >= 0 && nums[1] < 256 && nums[2] >= 0 && nums[2] < 256 && nums[3] >= 0 && nums[3] < 256
+      when 'mask'
+        mask = _.get(this.context.order, "vs.#{dir}.trunk.entries[#{i}].mask")
+        mask == '24' || mask == '25' || mask == '26' || mask == '27' || mask == '28' || mask == '29' || mask == '30' || mask == '32'
+      when 'port'
+        port = _.get(this.context.order, "vs.#{dir}.trunk.entries[#{i}].port")
+        parseInt(port) >= 2500 && parseInt(port) <= 65555
+      when 'weight'
+        return true if dir == 'out'
+        if _.get(this.context.order, 'vs.in.trunk.distro.type.pd')
+          sum = 0
+          _.times(this.numIps(dir) - 1, (i) ->
+            weight = _.get(react.context.order, "vs.#{dir}.trunk.entries[#{i}].distro_percent")
+            sum += parseInt weight
+          )
+          sum == 100
+        else
+          true
+
+  fieldClass: (field, dir, i) ->
+    react = this
+    classNames
+      invalid: !react.validateField(field, dir, i) && i != (react.numIps(dir)-1)
 
   weightInput: -> !_.get(this.context.order, 'vs.in.trunk.distro.type.pd')
 
@@ -68,7 +110,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>IP Address</div>
                       {_.times(react.numIps('out'), (i) ->
                         <div className='field ip' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].ip")} onChange={react.updateIp.bind(null, i, 'out', 'ip')}/>
+                          <input type='text' className={react.fieldClass('ip', 'out', i)} value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].ip")} onChange={react.updateIp.bind(null, i, 'out', 'ip')}/>
                         </div>
                       )}
                 </div>
@@ -76,7 +118,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Mask</div>
                       {_.times(react.numIps('out'), (i) ->
                         <div className='field mask' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].mask")} onChange={react.updateIp.bind(null, i, 'out', 'mask')}/>
+                          <input type='text' className={react.fieldClass('mask', 'out', i)} value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].mask")} onChange={react.updateIp.bind(null, i, 'out', 'mask')}/>
                         </div>
                       )}
                 </div>
@@ -84,7 +126,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Port</div>
                       {_.times(react.numIps('out'), (i) ->
                         <div className='field port' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].port")} onChange={react.updateIp.bind(null, i, 'out', 'port')}/>
+                          <input type='text' placeholder='5060' className={react.fieldClass('port', 'out', i)} value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].port")} onChange={react.updateIp.bind(null, i, 'out', 'port')}/>
                         </div>
                       )}
                 </div>
@@ -100,7 +142,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>IP Address</div>
                       {_.times(react.numIps('in'), (i) ->
                         <div className='field ip' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].ip")} onChange={react.updateIp.bind(null, i, 'in', 'ip')}/>
+                          <input type='text' className={react.fieldClass('ip', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].ip")} onChange={react.updateIp.bind(null, i, 'in', 'ip')}/>
                         </div>
                       )}
                 </div>
@@ -108,7 +150,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Mask</div>
                       {_.times(react.numIps('in'), (i) ->
                         <div className='field mask' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].mask")} onChange={react.updateIp.bind(null, i, 'in', 'mask')}/>
+                          <input type='text' className={react.fieldClass('mask', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].mask")} onChange={react.updateIp.bind(null, i, 'in', 'mask')}/>
                         </div>
                       )}
                 </div>
@@ -116,7 +158,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Port</div>
                       {_.times(react.numIps('in'), (i) ->
                         <div className='field port' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].port")} onChange={react.updateIp.bind(null, i, 'in', 'port')}/>
+                          <input type='text' className={react.fieldClass('port', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].port")} onChange={react.updateIp.bind(null, i, 'in', 'port')}/>
                         </div>
                       )}
                 </div>
@@ -124,7 +166,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Weight</div>
                       {_.times(react.numIps('in'), (i) ->
                         <div className='field weight' id={"ip#{i}"} key={i}>
-                          <input type='text' value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].distro_percent")} onChange={react.updateIp.bind(null, i, 'in', 'distro_percent')} readOnly={react.weightInput()}/>
+                          <input type='text' className={react.fieldClass('weight', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].distro_percent")} onChange={react.updateIp.bind(null, i, 'in', 'distro_percent')} readOnly={react.weightInput()}/>
                         </div>
                       )}
                 </div>
