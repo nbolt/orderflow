@@ -1,17 +1,14 @@
 NewNumbersComponent = React.createClass
   contextTypes:
+    ident: React.PropTypes.string
     token: React.PropTypes.string
     order: React.PropTypes.object
     nav: React.PropTypes.func
     updateOrder: React.PropTypes.func
 
-  addNumbers: ->
-    selected = _.map(['1234567890'], (n) -> { number: n, type: 'did',  })
-    this.context.updateOrder([['vs.in.all', selected]])
-
   searchNumbers: ->
     react = this
-    data = { list_id: this.context.order.id }
+    data = { list_id: this.context.ident }
     switch this.state.tab
       when 'did'
         switch this.state.did.search
@@ -47,39 +44,57 @@ NewNumbersComponent = React.createClass
                 tfn.numbers = rsp
                 react.setState({ tfn: tfn })
 
-  refreshNumbers: -> this.searchNumbers()
+  reserveNumber: (number) ->
+    react = this
+    $.ajax
+      url: "http://staging.apeironsys.com/api/number_search/reserve/#{number}/#{this.context.ident}"
+      method: 'GET'
+      headers: { Authorization: 'Bearer ' + react.context.token }
+      dataType: 'json'
+      success: (rsp) ->
+        nums = _.map(rsp, (n) -> { number: n, type: react.numType(n) })
+        react.context.updateOrder([['vs.in.all', nums]], true)
+        react.selectNumber number
 
-  didSelectNumber: (number) ->
-    numbers      = _.filter(this.state.did.numbers, (n) -> n != number)
-    selected     = _.concat(this.state.did.selected, number)
-    did          = this.state.did
-    did.numbers  = numbers
-    did.selected = selected
-    this.setState({ did: did })
+  unreserveNumber: (number) ->
+    react = this
+    $.ajax
+      url: "http://staging.apeironsys.com/api/number_search/unreserve/#{number}/#{this.context.ident}"
+      method: 'GET'
+      headers: { Authorization: 'Bearer ' + react.context.token }
+      dataType: 'json'
+      success: (rsp) ->
+        nums = _.map(rsp, (n) -> { number: n, type: react.numType(n) })
+        react.context.updateOrder([['vs.in.all', nums]], true)
+        react.removeNumber number
 
-  tfnSelectNumber: (number) ->
-    numbers      = _.filter(this.state.tfn.numbers, (n) -> n != number)
-    selected     = _.concat(this.state.tfn.selected, number)
-    tfn          = this.state.tfn
-    tfn.numbers  = numbers
-    tfn.selected = selected
-    this.setState({ tfn: tfn })
+  numType: (number) ->
+    if number[0..2] in ['800', '888', '877', '866', '855', '844']
+      'tfn'
+    else
+      'did'
 
-  didRemoveNumber: (number) ->
-    selected     = _.filter(this.state.did.selected, (n) -> n != number)
-    numbers      = _.concat(this.state.did.numbers, number)
-    did          = this.state.did
-    did.numbers  = numbers
-    did.selected = selected
-    this.setState({ did: did })
+  selectNumber: (number) ->
+    numbers  = _.filter(this.state[this.numType(number)].numbers, (n) -> n != number)
+    selected = _.concat(this.state[this.numType(number)].selected, number)
+    type     = this.numType number
+    this.setNumbers type, numbers, selected
 
-  tfnRemoveNumber: (number) ->
-    selected     = _.filter(this.state.tfn.selected, (n) -> n != number)
-    numbers      = _.concat(this.state.tfn.numbers, number)
-    tfn          = this.state.tfn
-    tfn.numbers  = numbers
-    tfn.selected = selected
-    this.setState({ tfn: tfn })
+  removeNumber: (number) ->
+    selected = _.filter(this.state[this.numType(number)].selected, (n) -> n != number)
+    numbers  = _.concat(this.state[this.numType(number)].numbers, number)
+    type     = this.numType number
+    this.setNumbers type, numbers, selected
+
+  setNumbers: (type, numbers, selected) ->
+    obj          = this.state[type]
+    obj.numbers  = numbers
+    obj.selected = selected
+    switch type
+      when 'tfn'
+        this.setState({ tfn: obj })
+      when 'did'
+        this.setState({ did: obj })
 
   tab: (pane) -> this.setState({ tab: pane })
 
@@ -222,7 +237,7 @@ NewNumbersComponent = React.createClass
             <div className='title'>Search Results</div>
             <div className='numbers'>
               {_.map(this.state.did.numbers, (number, i) ->
-                <div className='number' key={i} onClick={react.didSelectNumber.bind(null, number)}>{number}</div>
+                <div className='number' key={i} onClick={react.reserveNumber.bind(null, number)}>{number}</div>
               )}
             </div>
           </div>
@@ -230,7 +245,7 @@ NewNumbersComponent = React.createClass
             <div className='title'>Selected Numbers</div>
             <div className='numbers'>
               {_.map(this.state.did.selected, (number, i) ->
-                <div className='number' key={i} onClick={react.didRemoveNumber.bind(null, number)}>{number}</div>
+                <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
               )}
             </div>
           </div>
@@ -252,7 +267,7 @@ NewNumbersComponent = React.createClass
             <div className='title'>Search Results</div>
             <div className='numbers'>
               {_.map(this.state.tfn.numbers, (number, i) ->
-                <div className='number' key={i} onClick={react.tfnSelectNumber.bind(null, number)}>{number}</div>
+                <div className='number' key={i} onClick={react.reserveNumber.bind(null, number)}>{number}</div>
               )}
             </div>
           </div>
@@ -260,7 +275,7 @@ NewNumbersComponent = React.createClass
             <div className='title'>Selected Numbers</div>
             <div className='numbers'>
               {_.map(this.state.tfn.selected, (number, i) ->
-                <div className='number' key={i} onClick={react.tfnRemoveNumber.bind(null, number)}>{number}</div>
+                <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
               )}
             </div>
           </div>
@@ -269,7 +284,7 @@ NewNumbersComponent = React.createClass
       <div className='hidden foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
-          <li className={this.refreshClass()}><a href='javascript:void(0)' onClick={this.refreshNumbers}>Refresh</a></li>
+          <li className={this.refreshClass()}><a href='javascript:void(0)' onClick={this.searchNumbers}>Refresh</a></li>
           <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
         </ul>
       </div>

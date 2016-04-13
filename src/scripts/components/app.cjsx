@@ -2,6 +2,7 @@ Link = ReactRouter.Link
 
 AppComponent = React.createClass
   childContextTypes:
+    ident: React.PropTypes.string
     token: React.PropTypes.string
     address: React.PropTypes.object
     order: React.PropTypes.object
@@ -11,6 +12,7 @@ AppComponent = React.createClass
     syncOrder: React.PropTypes.func
 
   getChildContext: ->
+    ident: this.props.params.ident
     token: this.state.token
     address: this.state.address
     order: this.state.order || {}
