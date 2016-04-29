@@ -207,6 +207,41 @@ input
           margin-bottom: 10px
           color: #539770
           font-weight: 600
+    #number-features
+      .numbers-container
+        .numbers
+          height: 310px
+          overflow-y: scroll
+        .row
+          margin: 10px 0
+          .column
+            font-size: 0.9em
+            display: inline-block
+            vertical-align: top
+            width: 12.5%
+            .text
+              text-align: center
+              padding: 8px 0
+            .check
+              text-align: center
+              overflow: auto
+              .icon
+                font-size: 1.8em
+                margin-top: 2px
+              &.n
+                .icon
+                  color: #c0392b
+              &.y
+                .icon
+                  color: #27ae60
+              &:hover
+                cursor: pointer
+            input
+              width: 100%
+          &.head
+            .column
+              .text
+                text-decoration: underline
     #ip-addresses
       .routing-method
         margin-top: 36px

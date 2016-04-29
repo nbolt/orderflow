@@ -53,8 +53,14 @@ gulp.task('styles', function() {
     .pipe(notify({ message: 'Styles task complete' }));
 });
 
+gulp.task('assets', function() {
+  return gulp.src('src/assets/**/*')
+    .pipe(gulp.dest('dist/assets'))
+    .pipe(notify({ message: 'Assets task complete' }));
+});
+
 gulp.task('default', ['clean'], function() {
-  gulp.start('images', 'scripts', 'components', 'styles', 'stylus');
+  gulp.start('images', 'scripts', 'components', 'styles', 'stylus', 'assets');
 });
 
 gulp.task('watch', function() {
