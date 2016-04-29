@@ -3,6 +3,7 @@
     "gulp": "*",
     "axis": "*",
     "gulp-cjsx": "*",
+    "gulp-cssnano": "*",
     "gulp-jshint": "*",
     "jshint": "*",
     "gulp-uglify": "*",
