@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "gulp": "*",
+    "axis": "*",
+    "gulp-cjsx": "*",
+    "gulp-cssnano": "*",
+    "gulp-jshint": "*",
+    "jshint": "*",
+    "gulp-uglify": "*",
+    "gulp-rename": "*",
+    "gulp-concat": "*",
+    "gulp-notify": "*",
+    "gulp-cache": "*",
+    "gulp-imagemin": "*",
+    "gulp-livereload": "*",
+    "gulp-accord": "*",
+    "del": "*",
+    "stylus": "*",
+    "localforage": "*",
+  },
+}
