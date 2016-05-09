@@ -18,9 +18,11 @@ IPAddressesComponent = React.createClass
         if dir == 'out' && _.get(this.context.order, 'vs.in.trunk.inbound_checked')
           this.context.removeArrayElement([["vs.in.trunk.entries", i]])
     else
-      this.context.updateOrder([["vs.#{dir}.trunk.entries[#{i}][#{attr}]", ev.target.value]])
+      value = ev.target.value
+      value = parseInt value if attr != 'ip'
+      this.context.updateOrder([["vs.#{dir}.trunk.entries[#{i}][#{attr}]", value]])
       if dir == 'out' && _.get(this.context.order, 'vs.in.trunk.inbound_checked')
-        this.context.updateOrder([["vs.in.trunk.entries[#{i}][#{attr}]", ev.target.value]])
+        this.context.updateOrder([["vs.in.trunk.entries[#{i}][#{attr}]", value]])
     this.updateRouting()
 
   updateRouting: (type) ->
@@ -41,7 +43,7 @@ IPAddressesComponent = React.createClass
         )
       when 'rr'
         _.times(ips, (i) ->
-          react.context.updateOrder([["vs.in.trunk.entries[#{i}].distro_percent", (100 / ips).toFixed(0)]], false)
+          react.context.updateOrder([["vs.in.trunk.entries[#{i}].distro_percent", parseInt (100 / ips).toFixed(0)]], false)
         )
 
   inboundCheck: (ev) ->
@@ -85,17 +87,17 @@ IPAddressesComponent = React.createClass
         nums[0] > 0 && nums[0] < 256 && nums[1] >= 0 && nums[1] < 256 && nums[2] >= 0 && nums[2] < 256 && nums[3] >= 0 && nums[3] < 256
       when 'mask'
         mask = _.get(this.context.order, "vs.#{dir}.trunk.entries[#{i}].mask")
-        mask == '24' || mask == '25' || mask == '26' || mask == '27' || mask == '28' || mask == '29' || mask == '30' || mask == '32'
+        mask == 24 || mask == 25 || mask == 26 || mask == 27 || mask == 28 || mask == 29 || mask == 30 || mask == 32
       when 'port'
         port = _.get(this.context.order, "vs.#{dir}.trunk.entries[#{i}].port")
-        parseInt(port) >= 2500 && parseInt(port) <= 65555
+        port >= 2500 && port <= 65555
       when 'weight'
         return true if dir == 'out'
         if _.get(this.context.order, 'vs.in.trunk.distro.type.pd')
           sum = 0
           _.times(this.numIps(dir) - 1, (i) ->
             weight = _.get(react.context.order, "vs.#{dir}.trunk.entries[#{i}].distro_percent")
-            sum += parseInt weight
+            sum += weight
           )
           sum == 100
         else
