@@ -43,62 +43,64 @@ NumberFeaturesComponent = React.createClass
   render: ->
     react = this
     <div id='number-features'>
-      <div className='numbers-container'>
-        <div className='row head'>
-          <div className='column'>
-            <div className='text'>Number</div>
-          </div>
-          <div className='column'>
-            <div className='text'>Type</div>
-          </div>
-          <div className='column'>
-            <div className='text'>Action</div>
-          </div>
-          <div className='column'>
-            <div className='text'>E911</div>
-          </div>
-          <div className='column'>
-            <div className='text'>Listing</div>
-          </div>
-          <div className='column'>
-            <div className='text'>CNAM In</div>
-          </div>
-          <div className='column'>
-            <div className='text'>CNAM Out</div>
-          </div>
-          <div className='column'>
-            <div className='text'>SMS</div>
-          </div>
-        </div>
-        <div className='numbers'>
-          {_.map(this.numbers(), (n, i) ->
-            <div className='row number' key={i}>
-              <div className='column'>
-                <div className='text'>{n.number}</div>
-              </div>
-              <div className='column'>
-                <div className='text'>{n.type.toUpperCase()}</div>
-              </div>
-              <div className='column'>
-                <div className='text'>{n.action.toUpperCase()}</div>
-              </div>
-              <div className='column'>
-                {react.attr(n, 'e911')}
-              </div>
-              <div className='column'>
-                <input type='text' value={n.name} onChange={react.attrInput.bind(null, n, 'name')}/>
-              </div>
-              <div className='column'>
-                {react.attr(n, 'cnam')}
-              </div>
-              <div className='column'>
-                <input type='text' value={n.cnam_out} onChange={react.attrInput.bind(null, n, 'cnam_out')}/>
-              </div>
-              <div className='column'>
-                {react.attr(n, 'sms')}
-              </div>
+      <div className='viewport'>
+        <div className='numbers-container'>
+          <div className='row head'>
+            <div className='column'>
+              <div className='text'>Number</div>
             </div>
-          )}
+            <div className='column'>
+              <div className='text'>Type</div>
+            </div>
+            <div className='column'>
+              <div className='text'>Action</div>
+            </div>
+            <div className='column'>
+              <div className='text'>E911</div>
+            </div>
+            <div className='column'>
+              <div className='text'>Listing</div>
+            </div>
+            <div className='column'>
+              <div className='text'>CNAM In</div>
+            </div>
+            <div className='column'>
+              <div className='text'>CNAM Out</div>
+            </div>
+            <div className='column'>
+              <div className='text'>SMS</div>
+            </div>
+          </div>
+          <div className='numbers'>
+            {_.map(this.numbers(), (n, i) ->
+              <div className='row number' key={i}>
+                <div className='column'>
+                  <div className='text'>{n.number}</div>
+                </div>
+                <div className='column'>
+                  <div className='text'>{n.type.toUpperCase()}</div>
+                </div>
+                <div className='column'>
+                  <div className='text'>{n.action.toUpperCase()}</div>
+                </div>
+                <div className='column'>
+                  {react.attr(n, 'e911')}
+                </div>
+                <div className='column'>
+                  <input type='text' value={n.name} onChange={react.attrInput.bind(null, n, 'name')}/>
+                </div>
+                <div className='column'>
+                  {react.attr(n, 'cnam')}
+                </div>
+                <div className='column'>
+                  <input type='text' value={n.cnam_out} onChange={react.attrInput.bind(null, n, 'cnam_out')}/>
+                </div>
+                <div className='column'>
+                  {react.attr(n, 'sms')}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className='foot'>

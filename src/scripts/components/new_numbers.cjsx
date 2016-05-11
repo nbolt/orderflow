@@ -126,7 +126,10 @@ NewNumbersComponent = React.createClass
 
   continueClass: ->
 
-  refreshClass: ->
+  footClass: ->
+    react = this
+    classNames 'foot',
+      hidden: !react.state.tab
 
   tabClass: (tab) ->
     react = this
@@ -281,10 +284,9 @@ NewNumbersComponent = React.createClass
           </div>
         </div>
       </div>
-      <div className='hidden foot'>
+      <div className={this.footClass()}>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
-          <li className={this.refreshClass()}><a href='javascript:void(0)' onClick={this.searchNumbers}>Refresh</a></li>
           <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
         </ul>
       </div>

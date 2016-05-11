@@ -103,7 +103,7 @@ input
         color: gray
         nav
           overflow: auto
-          height: 360px
+          height: 440px
           li
             margin: 16px 0
             &.selected a
@@ -115,7 +115,8 @@ input
       &.right
         width: 75%
         .viewport
-          height: 360px
+          overflow: auto
+          height: 440px
         .foot
           height: 20px
     #service-type
@@ -137,6 +138,38 @@ input
           display: none
           &.selected
             display: block
+    #trunk-config
+      .section
+        >
+          .title
+            font-size: 1.1em
+            text-decoration: underline
+          .desc
+            margin: 20px 0 20px 20px
+            font-size: 0.9em
+            line-height: 1.2em
+        .options
+          margin: 20px 0 0 40px
+          .title
+            width: 60px
+            display: inline-block
+            margin: 7px 20px 0 0
+        .locations
+          margin-left: 40px
+          .location
+            line-height: 1.2em
+            height: 60px
+            .ip-container, .dropdown
+              display: inline-block
+              vertical-align: top
+            .dropdown
+              margin-left: 40px
+              width: 140px
+              .Select-clear
+                display: none
+            .ip-container
+              .ip
+                font-weight: 600
     #new-numbers
       .tabs
         .tab
@@ -158,7 +191,7 @@ input
           display: inline-block
           vertical-align: top
           width: 33%
-          height: 320px
+          height: 366px
           border-right: thin solid #ccc
           .numbers
             font-size: 0.9em
