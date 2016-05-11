@@ -126,11 +126,6 @@ NewNumbersComponent = React.createClass
 
   continueClass: ->
 
-  footClass: ->
-    react = this
-    classNames 'foot',
-      hidden: !react.state.tab
-
   tabClass: (tab) ->
     react = this
     classNames 'tab',
@@ -212,6 +207,7 @@ NewNumbersComponent = React.createClass
   render: ->
     react = this
     <div id='new-numbers'>
+      <div className='viewport'>
       <div className='tabs'>
         <div className={this.tabClass('did')} onClick={this.tab.bind(null, 'did')}>DID Search</div>
         <div className={this.tabClass('tfn')} onClick={this.tab.bind(null, 'tfn')}>TFN Search</div>
@@ -284,7 +280,8 @@ NewNumbersComponent = React.createClass
           </div>
         </div>
       </div>
-      <div className={this.footClass()}>
+      </div>
+      <div className='foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
           <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>

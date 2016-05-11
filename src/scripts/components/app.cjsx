@@ -4,6 +4,7 @@ AppComponent = React.createClass
   childContextTypes:
     ident: React.PropTypes.string
     token: React.PropTypes.string
+    cost: React.PropTypes.array
     address: React.PropTypes.object
     order: React.PropTypes.object
     fetchOrder: React.PropTypes.func
@@ -14,6 +15,7 @@ AppComponent = React.createClass
   getChildContext: ->
     ident: this.props.params.ident
     token: this.state.token
+    cost: this.state.cost
     address: this.state.address
     order: this.state.order || {}
     fetchOrder: this.fetchOrder
@@ -22,7 +24,8 @@ AppComponent = React.createClass
     syncOrder: this.syncOrder
 
   getInitialState: ->
-    token:   'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
+    token: 'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
+    cost:  []
 
   newOrder: ->
     react = this
@@ -43,7 +46,9 @@ AppComponent = React.createClass
       headers: { Authorization: 'Bearer ' + react.state.token }
       dataType: 'json'
       success: (rsp) ->
+        first = if react.state.order then false else true
         react.setState({ order: rsp.order })
+        react.syncOrder() if first
 
   syncOrder: ->
     react = this
@@ -54,6 +59,7 @@ AppComponent = React.createClass
       dataType: 'json'
       contentType: 'application/json'
       data: JSON.stringify({ order: react.state.order })
+      success: (rsp) -> react.setState({ cost: rsp['cost'] }) if rsp['cost']
 
   updateOrder: (values, sync=false) ->
     order = this.state.order || {vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]}}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
