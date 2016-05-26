@@ -20,7 +20,7 @@ ServiceAddressComponent = React.createClass
       method: 'POST'
       headers: { Authorization: 'Bearer ' + react.context.token }
       dataType: 'json'
-      data: { address: "#{addr.line_1} #{addr.line_2}, #{addr.city}, #{addr.state} #{addr.zip}" }
+      data: { address1: "#{addr.line_1}", address2: "#{addr.line_2}", city: "#{addr.city}", state: "#{addr.state}", zip_code: "#{addr.zip}" }
       success: (rsp) ->
         if rsp[0]
           addresses = _.filter(rsp, (addr) -> addr.city && addr.state && addr.postal_code && addr.street_number && addr.route)
