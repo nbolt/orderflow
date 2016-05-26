@@ -2,13 +2,13 @@ ListComponent = React.createClass
   componentDidMount: ->
     react = this
     $.ajax
-      url: 'http://staging.apeironsys.com/api/customers/info/'
+      url: 'http://staging.apeironsys.com/api/_flow/orders'
       method: 'GET'
       headers: { Authorization: 'Bearer ' + react.state.token }
       data: {  }
       dataType: 'json'
       success: (rsp) ->
-        react.setState({ email: rsp.email, address: rsp.customer_service_address })
+        react.setState({ orders: rsp })
 
   getInitialState: ->
     token:   'rPjBmIkXis8TSVLrfLz16rYWK4Teszml2GvPjw5S41B9ZqPPk2ZcKDzFQWETXwrO'
@@ -17,4 +17,5 @@ ListComponent = React.createClass
 
   render: ->
     <div id='order-list'>
+        {react.props.rsp.children}
     </div>
