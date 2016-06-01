@@ -28,13 +28,13 @@ ReviewComponent = React.createClass
           </div>
           {_.map(this.context.cost, (item, i) ->
             <div className='cost' key={i}>
-              <div className='column'>{item['call paths']['sku']}</div>
-              <div className='column'>{item['call paths']['description']}</div>
-              <div className='column'>{item['call paths']['Quantity']}</div>
-              <div className='column'>{item['call paths']['Unit MRC']}</div>
-              <div className='column'>{item['call paths']['Unit NRC']}</div>
-              <div className='column'>{item['call paths']['Total MRC']}</div>
-              <div className='column'>{item['call paths']['Total NRC']}</div>
+              <div className='column'>{item['sku']}</div>
+              <div className='column'>{item['description']}</div>
+              <div className='column'>{item['quantity']}</div>
+              <div className='column'>{item['unit_mrc']}</div>
+              <div className='column'>{item['unit_nrc']}</div>
+              <div className='column'>{item['total_mrc']}</div>
+              <div className='column'>{item['total_nrc']}</div>
             </div>
           )}
         </div>
