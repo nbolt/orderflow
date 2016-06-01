@@ -187,6 +187,9 @@ NewNumbersComponent = React.createClass
   tfnNpas: ->
     _.map([888], (n) -> { value: n, label: n })
 
+  tfnNxxs: ->
+    _.map([415], (n) -> { value: n, label: n })
+
   getInitialState: ->
     loading: false
     tab: null
@@ -203,6 +206,7 @@ NewNumbersComponent = React.createClass
       selected: []
       search: null
       npa: null
+      nxx: null
 
   render: ->
     react = this
@@ -258,6 +262,7 @@ NewNumbersComponent = React.createClass
             <div className='search-panes'>
               <div className={this.tfnSearchPaneClass('npa')}>
                 <Select value={this.state.tfn.npa} options={this.tfnNpas()} onChange={this.tfnFieldChange.bind(null, 'npa')}/>
+                <Select value={this.state.tfn.nxx} options={this.tfnNxxs()} onChange={this.tfnFieldChange.bind(null, 'nxx')}/>
               </div>
             </div>
             <div className={this.loadingClass()}>loading...</div>

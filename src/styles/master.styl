@@ -114,11 +114,50 @@ input
             color: #444
       &.right
         width: 75%
+        .foot
+          height: 20px
         .viewport
           overflow: auto
           height: 440px
-        .foot
-          height: 20px
+          .tabs
+            .tab
+              display: inline-block
+              padding: 8px 12px
+              border: thin solid #ccc
+              border-right: 0
+              &.selected
+                background-color: #eee
+              &:last-child
+                border-right: thin solid #ccc
+              &:hover
+                cursor: pointer
+                background-color: #eee
+          .tab-content
+            margin-top: 40px
+            .column
+              position: relative
+              display: inline-block
+              vertical-align: top
+              height: 330px
+              border-right: thin solid #ccc
+              .numbers
+                font-size: 0.9em
+                margin: 20px 0 0 20px
+                .number
+                  margin-bottom: 10px
+                  &:hover
+                    cursor: pointer
+                    color: #999
+              .loading
+                text-align: center
+                color: #999
+                position: absolute
+                bottom: 24px
+                left: 50%
+                width: 70px
+                margin-left: -35px
+              .title
+                text-align: center
     #service-type
       .field
         margin: 0 25px 10px 0
@@ -198,32 +237,8 @@ input
             cursor: pointer
             background-color: #eee
       .tab-content
-        margin-top: 40px
         .column
-          position: relative
-          display: inline-block
-          vertical-align: top
           width: 33%
-          height: 330px
-          border-right: thin solid #ccc
-          .numbers
-            font-size: 0.9em
-            margin: 20px 0 0 20px
-            .number
-              margin-bottom: 10px
-              &:hover
-                cursor: pointer
-                color: #999
-          .loading
-            text-align: center
-            color: #999
-            position: absolute
-            bottom: 24px
-            left: 50%
-            width: 70px
-            margin-left: -35px
-          .title
-            text-align: center
           .search-panes
             .Select
               width: 188px
