@@ -212,79 +212,79 @@ NewNumbersComponent = React.createClass
     react = this
     <div id='new-numbers'>
       <div className='viewport'>
-      <div className='tabs'>
-        <div className={this.tabClass('did')} onClick={this.tab.bind(null, 'did')}>DID Search</div>
-        <div className={this.tabClass('tfn')} onClick={this.tab.bind(null, 'tfn')}>TFN Search</div>
-      </div>
-      <div className='tab-content'>
-        <div className={this.paneClass('did')}>
-          <div className='column parameters'>
-            <div className='title'>Search Criteria</div>
-            <div className='search-tabs'>
-              <div className={this.didSearchTabClass('city')} onClick={this.didSearchTab.bind(null, 'city')}>City / State</div>
-              <div className={this.didSearchTabClass('npa')} onClick={this.didSearchTab.bind(null, 'npa')}>NPA / NXX</div>
-            </div>
-            <div className='search-panes'>
-              <div className={this.didSearchPaneClass('city')}>
-                <Select value={this.state.did.state} options={this.didStates()} onChange={this.didFieldChange.bind(null, 'state')}/>
-                <Select value={this.state.did.city} options={this.didCities()} onChange={this.didFieldChange.bind(null, 'city')}/>
+        <div className='tabs'>
+          <div className={this.tabClass('did')} onClick={this.tab.bind(null, 'did')}>DID Search</div>
+          <div className={this.tabClass('tfn')} onClick={this.tab.bind(null, 'tfn')}>TFN Search</div>
+        </div>
+        <div className='tab-content'>
+          <div className={this.paneClass('did')}>
+            <div className='column parameters'>
+              <div className='title'>Search Criteria</div>
+              <div className='search-tabs'>
+                <div className={this.didSearchTabClass('city')} onClick={this.didSearchTab.bind(null, 'city')}>City / State</div>
+                <div className={this.didSearchTabClass('npa')} onClick={this.didSearchTab.bind(null, 'npa')}>NPA / NXX</div>
               </div>
-              <div className={this.didSearchPaneClass('npa')}>
-                <Select value={this.state.did.npa} options={this.didNpas()} onChange={this.didFieldChange.bind(null, 'npa')}/>
-                <Select value={this.state.did.nxx} options={this.didNxxs()} onChange={this.didFieldChange.bind(null, 'nxx')}/>
+              <div className='search-panes'>
+                <div className={this.didSearchPaneClass('city')}>
+                  <Select value={this.state.did.state} options={this.didStates()} onChange={this.didFieldChange.bind(null, 'state')}/>
+                  <Select value={this.state.did.city} options={this.didCities()} onChange={this.didFieldChange.bind(null, 'city')}/>
+                </div>
+                <div className={this.didSearchPaneClass('npa')}>
+                  <Select value={this.state.did.npa} options={this.didNpas()} onChange={this.didFieldChange.bind(null, 'npa')}/>
+                  <Select value={this.state.did.nxx} options={this.didNxxs()} onChange={this.didFieldChange.bind(null, 'nxx')}/>
+                </div>
+              </div>
+              <div className={this.loadingClass()}>loading...</div>
+            </div>
+            <div className='column results'>
+              <div className='title'>Search Results</div>
+              <div className='numbers'>
+                {_.map(this.state.did.numbers, (number, i) ->
+                  <div className='number' key={i} onClick={react.reserveNumber.bind(null, number)}>{number}</div>
+                )}
               </div>
             </div>
-            <div className={this.loadingClass()}>loading...</div>
-          </div>
-          <div className='column results'>
-            <div className='title'>Search Results</div>
-            <div className='numbers'>
-              {_.map(this.state.did.numbers, (number, i) ->
-                <div className='number' key={i} onClick={react.reserveNumber.bind(null, number)}>{number}</div>
-              )}
+            <div className='column selection'>
+              <div className='title'>Selected Numbers</div>
+              <div className='numbers'>
+                {_.map(this.state.did.selected, (number, i) ->
+                  <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
+                )}
+              </div>
             </div>
           </div>
-          <div className='column selection'>
-            <div className='title'>Selected Numbers</div>
-            <div className='numbers'>
-              {_.map(this.state.did.selected, (number, i) ->
-                <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
-              )}
+          <div className={this.paneClass('tfn')}>
+            <div className='column parameters'>
+              <div className='title'>Search Criteria</div>
+              <div className='search-tabs'>
+                <div className={this.tfnSearchTabClass('npa')} onClick={this.tfnSearchTab.bind(null, 'npa')}>NPA / NXX</div>
+              </div>
+              <div className='search-panes'>
+                <div className={this.tfnSearchPaneClass('npa')}>
+                  <Select value={this.state.tfn.npa} options={this.tfnNpas()} onChange={this.tfnFieldChange.bind(null, 'npa')}/>
+                  <Select value={this.state.tfn.nxx} options={this.tfnNxxs()} onChange={this.tfnFieldChange.bind(null, 'nxx')}/>
+                </div>
+              </div>
+              <div className={this.loadingClass()}>loading...</div>
+            </div>
+            <div className='column results'>
+              <div className='title'>Search Results</div>
+              <div className='numbers'>
+                {_.map(this.state.tfn.numbers, (number, i) ->
+                  <div className='number' key={i} onClick={react.reserveNumber.bind(null, number)}>{number}</div>
+                )}
+              </div>
+            </div>
+            <div className='column selection'>
+              <div className='title'>Selected Numbers</div>
+              <div className='numbers'>
+                {_.map(this.state.tfn.selected, (number, i) ->
+                  <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-        <div className={this.paneClass('tfn')}>
-          <div className='column parameters'>
-            <div className='title'>Search Criteria</div>
-            <div className='search-tabs'>
-              <div className={this.tfnSearchTabClass('npa')} onClick={this.tfnSearchTab.bind(null, 'npa')}>NPA / NXX</div>
-            </div>
-            <div className='search-panes'>
-              <div className={this.tfnSearchPaneClass('npa')}>
-                <Select value={this.state.tfn.npa} options={this.tfnNpas()} onChange={this.tfnFieldChange.bind(null, 'npa')}/>
-                <Select value={this.state.tfn.nxx} options={this.tfnNxxs()} onChange={this.tfnFieldChange.bind(null, 'nxx')}/>
-              </div>
-            </div>
-            <div className={this.loadingClass()}>loading...</div>
-          </div>
-          <div className='column results'>
-            <div className='title'>Search Results</div>
-            <div className='numbers'>
-              {_.map(this.state.tfn.numbers, (number, i) ->
-                <div className='number' key={i} onClick={react.reserveNumber.bind(null, number)}>{number}</div>
-              )}
-            </div>
-          </div>
-          <div className='column selection'>
-            <div className='title'>Selected Numbers</div>
-            <div className='numbers'>
-              {_.map(this.state.tfn.selected, (number, i) ->
-                <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
       </div>
       <div className='foot'>
         <ul className='links'>

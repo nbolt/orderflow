@@ -2,8 +2,7 @@ ListComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
 
-  nav: (ident) ->
-    this.props.history.push("/order/#{ident}")
+  nav: (ident) -> this.props.history.push("/order/#{ident}")
 
   componentDidMount: ->
     react = this
@@ -22,7 +21,7 @@ ListComponent = React.createClass
   render: ->
     react = this
     <div id='order-list'>
-        {_.map(this.state.orders, (order, i) ->
-          <div className='order' key={i} onClick={react.nav.bind(null, order.ident)}>{order.ident}</div>
+        {_.map(this.state.orders, (o, i) ->
+          <div className='order' key={i} onClick={react.nav.bind(null, o.ident)}>{o.ident} <span className='attr'>[{_.get(o, 'order.status')}]</span></div>
         )}
     </div>

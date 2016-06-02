@@ -53,7 +53,7 @@ ServiceAddressComponent = React.createClass
       n ||= 0
       n = n+1
       clearInterval wait if n > 20
-      if _.get(react.context, 'order.service_addresses')
+      if _.get(react.context, 'order.service_addresses') || react.context.address
         clearInterval wait
         addr = _.get(react.context, 'order.service_addresses.default.full') || react.context.address ||
           line_1: null
@@ -62,7 +62,7 @@ ServiceAddressComponent = React.createClass
           state:  null
           zip:    null
         react.setState({ address: addr })
-        react.context.validateAddress(true) if _.get(react.context, 'order.service_addresses.default.full') || react.context.address
+        react.context.validateAddress(true)
     ), 100)
 
   disabled: -> this.context.address || this.context.addressValidated
@@ -80,12 +80,12 @@ ServiceAddressComponent = React.createClass
     classNames
       hidden: react.context.address || !react.context.addressValidated
 
-  verifyClass: -> 
+  verifyClass: ->
     react = this
     classNames 'remodal-confirm',
       hidden: !react.state.selectedAddress
 
-  addrClass: (address) -> 
+  addrClass: (address) ->
     react = this
     classNames 'address',
       selected: react.state.selectedAddress == address
@@ -96,7 +96,7 @@ ServiceAddressComponent = React.createClass
       hidden: !react.context.addressValidated
 
   address: ->
-    addr = _.get(this.context, 'order.service_addresses.default.full')
+    addr = _.get(this.context, 'order.service_addresses.default.full') || this.context.address
     if addr
       "#{addr.line_1} #{addr.line_2} #{addr.city} #{addr.state} #{addr.zip}"
     else

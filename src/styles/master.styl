@@ -90,6 +90,16 @@ input
     &:hover, &.selected
       background-color: #eee
 
+#order-list
+  .order
+    margin: 10px 0
+    &:hover
+      cursor: pointer
+      text-decoration: underline
+    span.attr
+      color: gray
+      font-size: 0.9em
+
 #order-component
   #form
     margin-top: 20px
@@ -222,6 +232,53 @@ input
             padding: 12px 0
             .column
               text-decoration: underline
+    #port-numbers
+      .tab-content
+        .column
+          height: auto
+          &.entry
+            width: 75%
+            .title
+              text-align: left
+          &.list
+            width: 25%
+            border-right: 0
+          > .title
+            text-decoration: underline
+          .options
+            margin-top: 20px
+            .title
+              width: 124px
+              display: inline-block
+              margin: 9px 20px 0 0
+            input
+              margin-left: 16px
+              width: 173px
+          .input
+            margin: 30px 0
+            width: 90%
+            textarea
+              width: 100%
+              padding: 16px
+              border-color: #ccc
+              border-radius: 3px
+              &:focus
+                outline: none
+          .provider-info
+            input
+              margin: 0 12px 12px 0
+          .submit
+            margin-top: 12px
+            input
+              visibility: hidden
+            .links
+              .link
+                color: gray
+                display: inline-block
+                margin-right: 12px
+                &:hover
+                  cursor: pointer
+                  text-decoration: underline
     #new-numbers
       .tabs
         .tab

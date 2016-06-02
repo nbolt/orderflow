@@ -6,6 +6,8 @@ AppComponent = React.createClass
     token: React.PropTypes.string
     cost: React.PropTypes.array
     address: React.PropTypes.object
+    addressValidated: React.PropTypes.bool
+    validateAddress: React.PropTypes.func
     order: React.PropTypes.object
     fetchOrder: React.PropTypes.func
     updateOrder: React.PropTypes.func
@@ -17,6 +19,8 @@ AppComponent = React.createClass
     token: this.state.token
     cost: this.state.cost
     address: this.state.address
+    addressValidated: this.state.addressValidated
+    validateAddress: this.validateAddress
     order: this.state.order || {}
     fetchOrder: this.fetchOrder
     updateOrder: this.updateOrder
@@ -26,6 +30,9 @@ AppComponent = React.createClass
   getInitialState: ->
     token: 'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
     cost:  []
+    addressValidated: false
+
+  validateAddress: (bool) -> this.setState({ addressValidated: bool })
 
   newOrder: ->
     react = this
@@ -35,6 +42,7 @@ AppComponent = React.createClass
       headers: { Authorization: 'Bearer ' + react.state.token }
       dataType: 'json'
       success: (rsp) ->
+        react.setState({ addressValidated: false })
         react.props.history.push("/order/#{rsp.ident}/service_type")
         react.fetchOrder()
 
@@ -62,7 +70,7 @@ AppComponent = React.createClass
       success: (rsp) -> react.setState({ cost: rsp['cost'] }) if rsp['cost']
 
   updateOrder: (values, sync=false) ->
-    order = this.state.order || {vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]}}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
+    order = this.state.order || {status: 'in_progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
     _.each(values, (v) -> _.set(order, v[0], v[1]))
     _.set(order, 'vs.in.trunk.inbound_checked', false) unless _.get(order, 'vs._service_direction.bi')
     this.setState({ order: order })

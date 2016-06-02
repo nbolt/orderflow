@@ -1,11 +1,15 @@
 ReviewComponent = React.createClass
   contextTypes:
+    home: React.PropTypes.func
     nav: React.PropTypes.func
     cost: React.PropTypes.array
     order: React.PropTypes.object
     syncOrder: React.PropTypes.func
+    updateOrder: React.PropTypes.func
 
   accept: ->
+    this.context.updateOrder([['status', 'complete']], true)
+    this.context.home()
 
   backClass: ->
   continueClass: ->

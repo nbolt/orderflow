@@ -15,7 +15,7 @@ NumberFeaturesComponent = React.createClass
 
   numbers: ->
     n = _.get(this.context.order, 'vs.in.all') || []
-    p = _.get(this.context.order, 'vs.in.portorder') || []
+    p = _.get(this.context.order, 'vs.in.portorder.numbers') || []
     n = _.map(n, (n) -> n.action = 'new'; n)
     p = _.map(p, (n) -> n.action = 'port'; n)
     _.concat(n, p)

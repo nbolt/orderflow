@@ -9,22 +9,16 @@ OrderComponent = React.createClass
 
   childContextTypes:
     nav: React.PropTypes.func
-    validateAddress: React.PropTypes.func
-    addressValidated: React.PropTypes.bool
+    home: React.PropTypes.func
 
   getChildContext: ->
     nav: this.nav
-    validateAddress: this.validateAddress
-    addressValidated: this.state.addressValidated
-
-  getInitialState: ->
-    addressValidated: false
-
-  validateAddress: (bool) ->
-    this.setState({ addressValidated: bool })
+    home: this.home
 
   componentDidMount: ->
     this.context.fetchOrder()
+
+  home: -> this.props.history.push("/order/#{this.props.params.ident}")
 
   nav: (dir, path) ->
     this.context.syncOrder()
