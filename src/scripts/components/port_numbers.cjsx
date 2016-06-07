@@ -23,7 +23,7 @@ PortNumbersComponent = React.createClass
       success: (rsp) ->
         order = react.state.order
         order.invoices.push({ id: rsp[0]['id'], filename: rsp[0]['filename'] })
-        this.setState({ order: order })
+        react.setState({ order: order })
 
   removeNumber: (number) ->
     react = this
