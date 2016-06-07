@@ -21,17 +21,19 @@ OrderComponent = React.createClass
   home: -> this.props.history.push("/order/#{this.props.params.ident}")
 
   nav: (dir, path) ->
-    this.context.syncOrder()
-    panes = switch
-      when _.get(this.context, 'order.sms._enabled')
-        ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
-      when _.get(this.context, 'order.vs._enabled')
-        ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
-      else
-        ['service_type']
-    index = _.indexOf(panes, path)
-    n = if dir == 'back' then -1 else 1
-    this.props.history.push("/order/#{this.props.params.ident}/#{panes[index+n]}")
+    react = this
+    this.context.syncOrder(->
+      panes = switch
+        when _.get(react.context, 'order.sms._enabled')
+          ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+        when _.get(react.context, 'order.vs._enabled')
+          ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
+        else
+          ['service_type']
+      index = _.indexOf(panes, path)
+      n = if dir == 'back' then -1 else 1
+      react.props.history.push("/order/#{react.props.params.ident}/#{panes[index+n]}")
+    )
 
   linkClass: (path) ->
     order = this.context.order

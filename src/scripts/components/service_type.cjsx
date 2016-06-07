@@ -1,13 +1,17 @@
 ServiceTypeComponent = React.createClass
   contextTypes:
     order: React.PropTypes.object
+    errors: React.PropTypes.array
+    errClass: React.PropTypes.func
+    hintClass: React.PropTypes.func
+    hintContent: React.PropTypes.func
     nav: React.PropTypes.func
     syncOrder: React.PropTypes.func
     updateOrder: React.PropTypes.func
 
   updateInput: (path, ev) ->
     this.context.updateOrder([[path, parseInt(ev.target.value) || null]])
- 
+
   hidden: (type) ->
     selected     = _.get(this.context.order, 'vs._enabled') || _.get(this.context.order, 'sms._enabled')
     selectedType = _.get(this.context.order, 'vs._enabled') && 'vs' || _.get(this.context.order, 'sms._enabled') && 'sms'
@@ -49,9 +53,9 @@ ServiceTypeComponent = React.createClass
               <div className={this.selected('vs._service_direction.bi') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs._service_direction.out', false], ['vs._service_direction.in', false], ['vs._service_direction.bi', true]], false)}>Bidirectional</div>
             </div>
             <div className='call_paths'>
-              <div className='field'>
+              <div className={'field ' + this.context.hintClass('vs.call_paths')} aria-label={this.context.hintContent('vs.call_paths')}>
                 <label>Call Paths</label>
-                <input value={_.get(this.context, 'order.vs.call_paths')} onChange={this.updateInput.bind(null, 'vs.call_paths')} type='text'/>
+                <input className={this.context.errClass('vs.call_paths')} value={_.get(this.context, 'order.vs.call_paths')} onChange={this.updateInput.bind(null, 'vs.call_paths')} type='text'/>
               </div>
             </div>
             <div className='call_rates'>

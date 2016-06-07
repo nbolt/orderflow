@@ -4,6 +4,10 @@ AppComponent = React.createClass
   childContextTypes:
     ident: React.PropTypes.string
     token: React.PropTypes.string
+    errors: React.PropTypes.array
+    errClass: React.PropTypes.func
+    hintClass: React.PropTypes.func
+    hintContent: React.PropTypes.func
     cost: React.PropTypes.array
     address: React.PropTypes.object
     addressValidated: React.PropTypes.bool
@@ -17,6 +21,10 @@ AppComponent = React.createClass
   getChildContext: ->
     ident: this.props.params.ident
     token: this.state.token
+    errors: this.state.errors
+    errClass: this.errClass
+    hintClass: this.hintClass
+    hintContent: this.hintContent
     cost: this.state.cost
     address: this.state.address
     addressValidated: this.state.addressValidated
@@ -30,9 +38,42 @@ AppComponent = React.createClass
   getInitialState: ->
     token: 'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
     cost:  []
+    errors: []
     addressValidated: false
 
   validateAddress: (bool) -> this.setState({ addressValidated: bool })
+
+  errClass: (field) ->
+    err = false
+    _.each(this.state.errors, (o) ->
+      _.each(o, (v,k) ->
+        err = true if field == k
+      )
+    )
+    classNames
+      err: err
+
+  hintClass: (field) ->
+    hint = false
+    _.each(this.state.errors, (o) ->
+      _.each(o, (v,k) ->
+        hint = true if field == k
+      )
+    )
+    classNames
+      'hint--right': hint,
+      'hint--medium': hint,
+      'hint--error': hint,
+      'hint--rounded': hint
+
+  hintContent: (field) ->
+    content = ''
+    _.each(this.state.errors, (o) ->
+      _.each(o, (v,k) ->
+        content = v if field == k
+      )
+    )
+    content
 
   newOrder: ->
     react = this
@@ -58,8 +99,9 @@ AppComponent = React.createClass
         react.setState({ order: rsp.order })
         react.syncOrder() if first
 
-  syncOrder: ->
+  syncOrder: (cb) ->
     react = this
+    this.setState({ errors: [] })
     $.ajax
       url: "http://staging.apeironsys.com/api/_flow/orders/#{react.props.params.ident}"
       method: 'PUT'
@@ -67,7 +109,11 @@ AppComponent = React.createClass
       dataType: 'json'
       contentType: 'application/json'
       data: JSON.stringify({ order: react.state.order })
-      success: (rsp) -> react.setState({ cost: rsp['cost'] }) if rsp['cost']
+      success: (rsp, w) ->
+        react.setState({ cost: rsp['cost'] }) if rsp['cost']
+        cb() if cb
+      error: (rsp) ->
+        react.setState({ errors: rsp['responseJSON'] }) if _.isArray(rsp['responseJSON'])
 
   updateOrder: (values, sync=false) ->
     order = this.state.order || {status: 'in_progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
