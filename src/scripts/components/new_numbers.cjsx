@@ -3,6 +3,7 @@ NewNumbersComponent = React.createClass
     ident: React.PropTypes.string
     token: React.PropTypes.string
     domain: React.PropTypes.string
+    headers: React.PropTypes.object
     order: React.PropTypes.object
     nav: React.PropTypes.func
     updateOrder: React.PropTypes.func
@@ -29,7 +30,7 @@ NewNumbersComponent = React.createClass
       $.ajax
         url: "#{react.context.domain}/api/number_search"
         method: 'GET'
-        headers: { Authorization: 'Bearer ' + react.context.token }
+        headers: react.context.headers
         dataType: 'json'
         data: data
         success: (rsp) ->
@@ -50,7 +51,7 @@ NewNumbersComponent = React.createClass
     $.ajax
       url: "#{react.context.domain}/api/number_search/reserve/#{number}/#{this.context.ident}"
       method: 'GET'
-      headers: { Authorization: 'Bearer ' + react.context.token }
+      headers: react.context.headers
       dataType: 'json'
       success: (rsp) ->
         nums = _.map(rsp, (n) -> { number: n, type: react.numType(n) })
@@ -62,7 +63,7 @@ NewNumbersComponent = React.createClass
     $.ajax
       url: "#{react.context.domain}/api/number_search/unreserve/#{number}/#{this.context.ident}"
       method: 'GET'
-      headers: { Authorization: 'Bearer ' + react.context.token }
+      headers: react.context.headers
       dataType: 'json'
       success: (rsp) ->
         nums = _.map(rsp, (n) -> { number: n, type: react.numType(n) })

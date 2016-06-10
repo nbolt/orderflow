@@ -5,6 +5,7 @@ AppComponent = React.createClass
     ident: React.PropTypes.string
     token: React.PropTypes.string
     domain: React.PropTypes.string
+    headers: React.PropTypes.object
     errors: React.PropTypes.array
     errClass: React.PropTypes.func
     hintClass: React.PropTypes.func
@@ -23,6 +24,7 @@ AppComponent = React.createClass
     ident: this.props.params.ident
     token: this.state.token
     domain: this.state.domain
+    headers: this.state.headers
     errors: this.state.errors
     errClass: this.errClass
     hintClass: this.hintClass
@@ -76,7 +78,7 @@ AppComponent = React.createClass
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders"
       method: 'POST'
-      headers: { Authorization: 'Bearer ' + react.state.token }
+      headers: react.state.headers
       dataType: 'json'
       success: (rsp) ->
         react.setState({ addressValidated: false })
@@ -88,7 +90,7 @@ AppComponent = React.createClass
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
       method: 'GET'
-      headers: { Authorization: 'Bearer ' + react.state.token }
+      headers: react.state.headers
       dataType: 'json'
       success: (rsp) ->
         first = if react.state.order then false else true
@@ -101,7 +103,7 @@ AppComponent = React.createClass
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
       method: 'PUT'
-      headers: { Authorization: 'Bearer ' + react.state.token }
+      headers: react.state.headers
       dataType: 'json'
       contentType: 'application/json'
       data: JSON.stringify({ order: react.state.order })
@@ -125,18 +127,21 @@ AppComponent = React.createClass
     this.syncOrder() if sync
 
   getInitialState: ->
-    token: 'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
+    token: process.env.token
     domain: process.env.domain
+    headers: {}
     cost:  []
     errors: []
     addressValidated: false
+
+  componentWillMount: -> this.setState({ headers: { Authorization: "Bearer #{this.state.token}" } }) if this.state.token
 
   componentDidMount: ->
     react = this
     $.ajax
       url: 'http://staging.apeironsys.com/api/customers/info/'
       method: 'GET'
-      headers: { Authorization: 'Bearer ' + react.state.token }
+      headers: react.state.headers
       success: (rsp) ->
         react.setState({ email: rsp.email, name: rsp.customer_name, address: rsp.customer_service_address })
 

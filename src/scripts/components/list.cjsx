@@ -2,6 +2,7 @@ ListComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
     domain: React.PropTypes.string
+    headers: React.PropTypes.object
 
   nav: (ident) -> this.props.history.push("/order/#{ident}")
 
@@ -10,7 +11,7 @@ ListComponent = React.createClass
     $.ajax
       url: "##{react.context.domain}/api/_flow/orders"
       method: 'GET'
-      headers: { Authorization: 'Bearer ' + react.context.token }
+      headers: react.context.headers
       data: {  }
       dataType: 'json'
       success: (rsp) ->

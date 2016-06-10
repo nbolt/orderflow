@@ -14,7 +14,7 @@ var gulp   = require('gulp'),
     livereload = require('gulp-livereload'),
     del    = require('del')
 
-var env = {domain: gutil.env.domain || ''}
+var env = {token: gutil.env.token || null, domain: gutil.env.domain || ''}
 
 gulp.task('images', function() {
   return gulp.src('src/images/**/*')

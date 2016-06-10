@@ -4,6 +4,7 @@ ServiceAddressComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
     domain: React.PropTypes.string
+    headers: React.PropTypes.object
     order: React.PropTypes.object
     nav: React.PropTypes.func
     updateOrder: React.PropTypes.func
@@ -19,7 +20,7 @@ ServiceAddressComponent = React.createClass
     $.ajax
       url: "#{react.context.domain}/api/address/validate/"
       method: 'POST'
-      headers: { Authorization: 'Bearer ' + react.context.token }
+      headers: react.context.headers
       dataType: 'json'
       data: { address1: "#{addr.line_1}", address2: "#{addr.line_2}", city: "#{addr.city}", state: "#{addr.state}", zip_code: "#{addr.zip}" }
       success: (rsp) ->

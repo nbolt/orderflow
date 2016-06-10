@@ -2,6 +2,7 @@ PortNumbersComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
     domain: React.PropTypes.string
+    headers: React.PropTypes.object
     nav: React.PropTypes.func
     order: React.PropTypes.object
     updateOrder: React.PropTypes.func
@@ -15,7 +16,7 @@ PortNumbersComponent = React.createClass
     $.ajax
       url: "#{react.context.domain}/api/files/upload/"
       method: 'POST'
-      headers: { Authorization: 'Bearer ' + react.context.token }
+      headers: react.context.headers
       dataType: 'json'
       contentType: false
       processData: false
