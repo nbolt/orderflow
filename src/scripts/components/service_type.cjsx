@@ -59,13 +59,13 @@ ServiceTypeComponent = React.createClass
               </div>
             </div>
             <div className='call_rates'>
-              <div className='field'>
+              <div className={'field ' + this.context.hintClass('vs._cpsin')} aria-label={this.context.hintContent('vs._cpsin')}>
                 <label>Calls / second (CPS) IN</label>
-                <input value={_.get(this.context, 'order.vs._cpsin')} onChange={this.updateInput.bind(null, 'vs._cpsin')} type='text'/>
+                <input className={this.context.errClass('vs._cpsin')} value={_.get(this.context, 'order.vs._cpsin')} onChange={this.updateInput.bind(null, 'vs._cpsin')} type='text'/>
               </div>
-              <div className='field'>
+              <div className={'field ' + this.context.hintClass('vs._cpsout')} aria-label={this.context.hintContent('vs._cpsout')}>
                 <label>Calls / second (CPS) OUT</label>
-                <input value={_.get(this.context, 'order.vs._cpsout')} onChange={this.updateInput.bind(null, 'vs._cpsout')} type='text'/>
+                <input className={this.context.errClass('vs._cpsout')} value={_.get(this.context, 'order.vs._cpsout')} onChange={this.updateInput.bind(null, 'vs._cpsout')} type='text'/>
               </div>
             </div>
           </div>
