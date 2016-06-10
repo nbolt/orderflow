@@ -32,6 +32,14 @@ TrunkConfigComponent = React.createClass
           this.setState({ primary: other, secondary: city })
           this.context.updateOrder([['vs.apeironIPprimary', {ip: this.ip(other), port: '5060'}], ['vs.apeironIPsecondary', {ip: this.ip(city), port: '5060'}]])
 
+  toggle: (multi, field, fields) ->
+    react = this
+    value = _.get(this.context.order, field)
+    this.context.updateOrder([[field, !value]], false) unless _.every(fields, (f) -> !_.get(react.context.order, f))
+    unless multi
+      fields = _.map(fields, (f) -> [f, false])
+      this.context.updateOrder(fields, false)
+
   backClass: ->
   continueClass: ->
 
@@ -70,20 +78,20 @@ TrunkConfigComponent = React.createClass
           <div className='title'>Codec Configuration</div>
           <div className='options'>
             <div className='title'>Voice:</div>
-            <div className={this.selected('vs.codec.rtp.G711u64K') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.rtp.G711u64K', true]], false)}>G.711u 64K</div>
-            <div className={this.selected('vs.codec.rtp.G729a') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.rtp.G729a', true]], false)}>G.729a</div>
-            <div className={this.selected('vs.codec.rtp.G722') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.rtp.G722', true]], false)}>G.722</div>
+            <div className={this.selected('vs.codec.rtp.G711u64K') + ' type'} onClick={this.toggle.bind(null, true, 'vs.codec.rtp.G711u64K', ['vs.codec.rtp.G729a', 'vs.codec.rtp.G722'])}>G.711u 64K</div>
+            <div className={this.selected('vs.codec.rtp.G729a') + ' type'} onClick={this.toggle.bind(null, true, 'vs.codec.rtp.G729a', ['vs.codec.rtp.G711u64K', 'vs.codec.rtp.G722'])}>G.729a</div>
+            <div className={this.selected('vs.codec.rtp.G722') + ' type'} onClick={this.toggle.bind(null, true, 'vs.codec.rtp.G722', ['vs.codec.rtp.G711u64K', 'vs.codec.rtp.G729a'])}>G.722</div>
           </div>
           <div className='options'>
             <div className='title'>DTMF:</div>
-            <div className={this.selected('vs.codec.dtmf.RFC2833') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.rtp.RFC2833', true]], false)}>RFC 2833</div>
-            <div className={this.selected('vs.codec.dtmf.inband') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.dtmf.inband', true]], false)}>Inband</div>
+            <div className={this.selected('vs.codec.dtmf.RFC2833') + ' type'} onClick={this.toggle.bind(null, true, 'vs.codec.dtmf.RFC2833', ['vs.codec.dtmf.inband'])}>RFC 2833</div>
+            <div className={this.selected('vs.codec.dtmf.inband') + ' type'} onClick={this.toggle.bind(null, true, 'vs.codec.dtmf.inband', ['vs.codec.dtmf.RFC2833'])}>Inband</div>
           </div>
           <div className='options'>
             <div className='title'>Fax:</div>
-            <div className={this.selected('vs.codec.fax.T38Fallback') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.fax.T38Fallback', true], ['vs.codec.fax.T38', false], ['vs.codec.fax.G711', false]], false)}>T.38 - G.711 Fallback</div>
-            <div className={this.selected('vs.codec.fax.T38') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.fax.T38Fallback', false], ['vs.codec.fax.T38', true], ['vs.codec.fax.G711', false]], false)}>T.38</div>
-            <div className={this.selected('vs.codec.fax.G711') + ' type'} onClick={this.context.updateOrder.bind(null, [['vs.codec.fax.T38Fallback', false], ['vs.codec.fax.T38', false], ['vs.codec.fax.G711', true]], false)}>G.711 Passthrough</div>
+            <div className={this.selected('vs.codec.fax.T38Fallback') + ' type'} onClick={this.toggle.bind(null, false, 'vs.codec.fax.T38Fallback', ['vs.codec.fax.T38', 'vs.codec.fax.G711'])}>T.38 - G.711 Fallback</div>
+            <div className={this.selected('vs.codec.fax.T38') + ' type'} onClick={this.toggle.bind(null, false, 'vs.codec.fax.T38', ['vs.codec.fax.T38Fallback', 'vs.codec.fax.G711'])}>T.38</div>
+            <div className={this.selected('vs.codec.fax.G711') + ' type'} onClick={this.toggle.bind(null, false, 'vs.codec.fax.G711', ['vs.codec.fax.T38Fallback', 'vs.codec.fax.T38'])}>G.711 Passthrough</div>
           </div>
         </div>
       </div>
