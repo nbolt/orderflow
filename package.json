@@ -5,6 +5,8 @@
     "gulp-cjsx": "*",
     "gulp-cssnano": "*",
     "gulp-jshint": "*",
+    "gulp-envify": "*",
+    "gulp-util": "*",
     "jshint": "*",
     "gulp-uglify": "*",
     "gulp-rename": "*",

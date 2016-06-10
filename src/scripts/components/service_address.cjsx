@@ -3,6 +3,7 @@ Modal = ReactModal
 ServiceAddressComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
+    domain: React.PropTypes.string
     order: React.PropTypes.object
     nav: React.PropTypes.func
     updateOrder: React.PropTypes.func
@@ -16,7 +17,7 @@ ServiceAddressComponent = React.createClass
     react.context.validateAddress(false)
     addr = this.state.address
     $.ajax
-      url: "http://staging.apeironsys.com/api/address/validate/"
+      url: "#{react.context.domain}/api/address/validate/"
       method: 'POST'
       headers: { Authorization: 'Bearer ' + react.context.token }
       dataType: 'json'

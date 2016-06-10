@@ -2,6 +2,8 @@ var gulp   = require('gulp'),
     axis   = require('axis'),
     accord = require('gulp-accord'),
     cjsx   = require('gulp-cjsx'),
+    envify = require('gulp-envify'),
+    gutil  = require('gulp-util'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
@@ -12,6 +14,8 @@ var gulp   = require('gulp'),
     livereload = require('gulp-livereload'),
     del    = require('del')
 
+var env = {domain: gutil.env.domain || ''}
+
 gulp.task('images', function() {
   return gulp.src('src/images/**/*')
     .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
@@ -21,6 +25,7 @@ gulp.task('images', function() {
 
 gulp.task('components', function() {
   return gulp.src('src/scripts/components/*.cjsx')
+    .pipe(envify(env))
     .pipe(cjsx({bare:true}))
     .pipe(uglify())
     .pipe(concat('components.js'))

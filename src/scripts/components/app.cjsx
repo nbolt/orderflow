@@ -4,6 +4,7 @@ AppComponent = React.createClass
   childContextTypes:
     ident: React.PropTypes.string
     token: React.PropTypes.string
+    domain: React.PropTypes.string
     errors: React.PropTypes.array
     errClass: React.PropTypes.func
     hintClass: React.PropTypes.func
@@ -21,6 +22,7 @@ AppComponent = React.createClass
   getChildContext: ->
     ident: this.props.params.ident
     token: this.state.token
+    domain: this.state.domain
     errors: this.state.errors
     errClass: this.errClass
     hintClass: this.hintClass
@@ -34,12 +36,6 @@ AppComponent = React.createClass
     updateOrder: this.updateOrder
     removeArrayElement: this.removeArrayElement
     syncOrder: this.syncOrder
-
-  getInitialState: ->
-    token: 'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
-    cost:  []
-    errors: []
-    addressValidated: false
 
   validateAddress: (bool) -> this.setState({ addressValidated: bool })
 
@@ -78,7 +74,7 @@ AppComponent = React.createClass
   newOrder: ->
     react = this
     $.ajax
-      url: 'http://staging.apeironsys.com/api/_flow/orders'
+      url: "#{react.state.domain}/api/_flow/orders"
       method: 'POST'
       headers: { Authorization: 'Bearer ' + react.state.token }
       dataType: 'json'
@@ -90,7 +86,7 @@ AppComponent = React.createClass
   fetchOrder: ->
     react = this
     $.ajax
-      url: "http://staging.apeironsys.com/api/_flow/orders/#{react.props.params.ident}"
+      url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
       method: 'GET'
       headers: { Authorization: 'Bearer ' + react.state.token }
       dataType: 'json'
@@ -103,7 +99,7 @@ AppComponent = React.createClass
     react = this
     this.setState({ errors: [] })
     $.ajax
-      url: "http://staging.apeironsys.com/api/_flow/orders/#{react.props.params.ident}"
+      url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
       method: 'PUT'
       headers: { Authorization: 'Bearer ' + react.state.token }
       dataType: 'json'
@@ -127,6 +123,13 @@ AppComponent = React.createClass
     _.each(values, (v) -> _.remove(_.get(order, v[0]), (e,i) -> v[1] == i))
     this.setState({ order: order })
     this.syncOrder() if sync
+
+  getInitialState: ->
+    token: 'Bv020OGGCrw4eudKQn2Usyl8vSu4WyBY9XxTBxgqCtbfwoxCnkPL5YMLWSJyiBQB'
+    domain: process.env.domain
+    cost:  []
+    errors: []
+    addressValidated: false
 
   componentDidMount: ->
     react = this

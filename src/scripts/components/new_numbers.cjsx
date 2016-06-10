@@ -2,6 +2,7 @@ NewNumbersComponent = React.createClass
   contextTypes:
     ident: React.PropTypes.string
     token: React.PropTypes.string
+    domain: React.PropTypes.string
     order: React.PropTypes.object
     nav: React.PropTypes.func
     updateOrder: React.PropTypes.func
@@ -26,7 +27,7 @@ NewNumbersComponent = React.createClass
     if data.rate_center && data.state || this.state.tab == 'did' && data.npa && data.nxx || this.state.tab == 'tfn' && data.npa
       react.setState({ loading: true })
       $.ajax
-        url: 'http://staging.apeironsys.com/api/number_search'
+        url: "#{react.context.domain}/api/number_search"
         method: 'GET'
         headers: { Authorization: 'Bearer ' + react.context.token }
         dataType: 'json'
@@ -47,7 +48,7 @@ NewNumbersComponent = React.createClass
   reserveNumber: (number) ->
     react = this
     $.ajax
-      url: "http://staging.apeironsys.com/api/number_search/reserve/#{number}/#{this.context.ident}"
+      url: "#{react.context.domain}/api/number_search/reserve/#{number}/#{this.context.ident}"
       method: 'GET'
       headers: { Authorization: 'Bearer ' + react.context.token }
       dataType: 'json'
@@ -59,7 +60,7 @@ NewNumbersComponent = React.createClass
   unreserveNumber: (number) ->
     react = this
     $.ajax
-      url: "http://staging.apeironsys.com/api/number_search/unreserve/#{number}/#{this.context.ident}"
+      url: "#{react.context.domain}/api/number_search/unreserve/#{number}/#{this.context.ident}"
       method: 'GET'
       headers: { Authorization: 'Bearer ' + react.context.token }
       dataType: 'json'

@@ -1,6 +1,7 @@
 PortNumbersComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
+    domain: React.PropTypes.string
     nav: React.PropTypes.func
     order: React.PropTypes.object
     updateOrder: React.PropTypes.func
@@ -12,7 +13,7 @@ PortNumbersComponent = React.createClass
     data = new FormData()
     data.append('file', $('#upload').get(0).files[0]);
     $.ajax
-      url: 'http://staging.apeironsys.com/api/files/upload/'
+      url: "#{react.context.domain}/api/files/upload/"
       method: 'POST'
       headers: { Authorization: 'Bearer ' + react.context.token }
       dataType: 'json'

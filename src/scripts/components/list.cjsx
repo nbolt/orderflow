@@ -1,13 +1,14 @@
 ListComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
+    domain: React.PropTypes.string
 
   nav: (ident) -> this.props.history.push("/order/#{ident}")
 
   componentDidMount: ->
     react = this
     $.ajax
-      url: 'http://staging.apeironsys.com/api/_flow/orders'
+      url: "##{react.context.domain}/api/_flow/orders"
       method: 'GET'
       headers: { Authorization: 'Bearer ' + react.context.token }
       data: {  }
