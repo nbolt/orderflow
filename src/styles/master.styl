@@ -223,6 +223,20 @@ input
                 font-weight: 600
     #review
       .costs
+        .totals
+          margin-bottom: 20px
+          .total
+            display: inline-block
+            vertical-align: top
+            .title, .price
+              display: inline-block
+              vertical-align: top
+            .title
+              font-weight: 600
+            .price
+              margin: 0 25px 0 10px
+              &::before
+                content: '$'
         .cost
           padding: 8px 0
           .column
