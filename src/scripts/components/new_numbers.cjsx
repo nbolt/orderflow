@@ -192,12 +192,19 @@ NewNumbersComponent = React.createClass
   tfnNxxs: ->
     _.map([415], (n) -> { value: n, label: n })
 
+  dids: ->
+    react = this
+    _.filter(_.get(react.context.order, 'vs.in.all'), (n) -> !_.includes(['800', '888', '877', '866', '855', '844'], _.take(n.number, 3).join('')))
+
+  tfns: ->
+    react = this
+    _.filter(_.get(react.context.order, 'vs.in.all'), (n) -> _.includes(['800', '888', '877', '866', '855', '844'], _.take(n.number, 3).join('')))
+
   getInitialState: ->
     loading: false
     tab: null
     did:
       numbers: []
-      selected: []
       search: null
       city: null
       state: null
@@ -205,7 +212,6 @@ NewNumbersComponent = React.createClass
       nxx: null
     tfn:
       numbers: []
-      selected: []
       search: null
       npa: null
       nxx: null
@@ -249,8 +255,8 @@ NewNumbersComponent = React.createClass
             <div className='column selection'>
               <div className='title'>Selected Numbers</div>
               <div className='numbers'>
-                {_.map(this.state.did.selected, (number, i) ->
-                  <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
+                {_.map(react.dids(), (n, i) ->
+                  <div className='number' key={i} onClick={react.unreserveNumber.bind(null, n.number)}>{n.number}</div>
                 )}
               </div>
             </div>
@@ -280,8 +286,8 @@ NewNumbersComponent = React.createClass
             <div className='column selection'>
               <div className='title'>Selected Numbers</div>
               <div className='numbers'>
-                {_.map(this.state.tfn.selected, (number, i) ->
-                  <div className='number' key={i} onClick={react.unreserveNumber.bind(null, number)}>{number}</div>
+                {_.map(react.tfns(), (n, i) ->
+                  <div className='number' key={i} onClick={react.unreserveNumber.bind(null, n.number)}>{n.number}</div>
                 )}
               </div>
             </div>
