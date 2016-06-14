@@ -22,9 +22,13 @@ IPAddressesComponent = React.createClass
     else
       value = ev.target.value
       value = parseInt value if attr != 'ip'
+      updatePort = attr != 'port' && $("##{dir}-port-#{i} input").val() != '' && !_.get(this.context.order, "vs.#{dir}.trunk.entries[#{i}].port")
+      portValue  = $("##{dir}-port-#{i} input").val()
       this.context.updateOrder([["vs.#{dir}.trunk.entries[#{i}][#{attr}]", value]])
       if dir == 'out' && _.get(this.context.order, 'vs.in.trunk.inbound_checked')
         this.context.updateOrder([["vs.in.trunk.entries[#{i}][#{attr}]", value]])
+        this.context.updateOrder([["vs.in.trunk.entries[#{i}].port", portValue]]) if updatePort
+      this.context.updateOrder([["vs.#{dir}.trunk.entries[#{i}].port", portValue]]) if updatePort
     this.updateRouting()
 
   updateRouting: (type) ->
@@ -44,9 +48,15 @@ IPAddressesComponent = React.createClass
           react.context.updateOrder([["vs.in.trunk.entries[#{i}].distro_percent", n]], false)
         )
       when 'rr'
+        num = parseInt (100 / ips).toFixed(0)
         _.times(ips, (i) ->
-          react.context.updateOrder([["vs.in.trunk.entries[#{i}].distro_percent", parseInt (100 / ips).toFixed(0)]], false)
+          react.context.updateOrder([["vs.in.trunk.entries[#{i}].distro_percent", num]], false)
         )
+        total = 0
+        _.times(ips, (i) ->
+          total += _.get(react.context.order, "vs.in.trunk.entries[#{i}].distro_percent")
+        )
+        react.context.updateOrder([["vs.in.trunk.entries[0].distro_percent", num + (100 - total)]], false)
 
   inboundCheck: (ev) ->
     react = this
@@ -66,7 +76,7 @@ IPAddressesComponent = React.createClass
   continueClass: -> 'hidden' if !this.validateFields() || ((_.get(this.context.order, "vs._service_direction.bi") || _.get(this.context.order, "vs._service_direction.out")) && this.numIps('out') < 2) || ((_.get(this.context.order, "vs._service_direction.bi") || _.get(this.context.order, "vs._service_direction.in")) && (this.numIps('in') < 2 || (!_.get(this.context.order, 'vs.in.trunk.distro.type.hunt') && !_.get(this.context.order, 'vs.in.trunk.distro.type.pd') && !_.get(this.context.order, 'vs.in.trunk.distro.type.rr'))))
 
   ipClass: (dir) -> classNames 'direction', dir,
-    invisible: !_.get(this.context.order, "vs._service_direction[#{dir}]") && !_.get(this.context.order, "vs._service_direction.bi")
+    hidden: !_.get(this.context.order, "vs._service_direction[#{dir}]") && !_.get(this.context.order, "vs._service_direction.bi")
 
   validateFields: ->
     react = this
@@ -134,9 +144,9 @@ IPAddressesComponent = React.createClass
       if dir == 'out' && _.get(this.context.order, 'vs.in.trunk.inbound_checked')
         this.context.updateOrder([["vs.in.trunk.entries[#{i}][#{attr}]", data.value]])
     else
-      this.context.removeArrayElement([["vs.#{dir}.trunk.entries", i]])
+      this.context.updateOrder([["vs.#{dir}.trunk.entries[#{i}][#{attr}]", null]])
       if dir == 'out' && _.get(this.context.order, 'vs.in.trunk.inbound_checked')
-        this.context.removeArrayElement([["vs.in.trunk.entries", i]])
+        this.context.updateOrder([["vs.in.trunk.entries[#{i}][#{attr}]", null]])
     this.updateRouting()
 
   render: ->
@@ -145,7 +155,7 @@ IPAddressesComponent = React.createClass
       <div className='viewport'>
         <div className='ip-containers'>
           <div className='directions'>
-            <div className='div'/>
+            <div className={'div' + this.ipClass('out')}/>
             <div className={this.ipClass('out')}>
               <div className='title'>IP Addresses for Outbound</div>
               <div className='check'/>
@@ -153,7 +163,7 @@ IPAddressesComponent = React.createClass
                 <div className='column ip'>
                   <div className='title'>IP Address</div>
                       {_.times(react.numIps('out'), (i) ->
-                        <div className='field ip' id={"ip#{i}"} key={i}>
+                        <div className='field ip' id={"out-ip-#{i}"} key={i}>
                           <input type='text' className={react.fieldClass('ip', 'out', i)} value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].ip")} onChange={react.updateIp.bind(null, i, 'out', 'ip')}/>
                         </div>
                       )}
@@ -161,7 +171,7 @@ IPAddressesComponent = React.createClass
                 <div className='column'>
                   <div className='title'>Mask</div>
                       {_.times(react.numIps('out'), (i) ->
-                        <div className='field mask' id={"ip#{i}"} key={i}>
+                        <div className='field mask' id={"out-mask-#{i}"} key={i}>
                           <Select value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].mask")} options={react.masks()} onChange={react.maskChange.bind(null, i, 'out', 'mask')}/>
                         </div>
                       )}
@@ -169,7 +179,7 @@ IPAddressesComponent = React.createClass
                 <div className='column'>
                   <div className='title'>Port</div>
                       {_.times(react.numIps('out'), (i) ->
-                        <div className='field port' id={"ip#{i}"} key={i}>
+                        <div className='field port' id={"out-port-#{i}"} key={i}>
                           <input type='text' defaultValue={5060} placeholder='5060' className={react.fieldClass('port', 'out', i)} value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].port")} onChange={react.updateIp.bind(null, i, 'out', 'port')}/>
                         </div>
                       )}
@@ -185,7 +195,7 @@ IPAddressesComponent = React.createClass
                 <div className='column ip'>
                   <div className='title'>IP Address</div>
                       {_.times(react.numIps('in'), (i) ->
-                        <div className='field ip' id={"ip#{i}"} key={i}>
+                        <div className='field ip' id={"in-ip-#{i}"} key={i}>
                           <input type='text' readOnly={_.get(react.context.order, 'vs.in.trunk.inbound_checked')} className={react.fieldClass('ip', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].ip")} onChange={react.updateIp.bind(null, i, 'in', 'ip')}/>
                         </div>
                       )}
@@ -193,7 +203,7 @@ IPAddressesComponent = React.createClass
                 <div className='column'>
                   <div className='title'>Mask</div>
                       {_.times(react.numIps('in'), (i) ->
-                        <div className='field mask' id={"ip#{i}"} key={i}>
+                        <div className='field mask' id={"in-mask-#{i}"} key={i}>
                           <Select readOnly={_.get(react.context.order, 'vs.in.trunk.inbound_checked')} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].mask")} options={react.masks()} onChange={react.maskChange.bind(null, i, 'in', 'mask')}/>
                         </div>
                       )}
@@ -201,7 +211,7 @@ IPAddressesComponent = React.createClass
                 <div className='column'>
                   <div className='title'>Port</div>
                       {_.times(react.numIps('in'), (i) ->
-                        <div className='field port' id={"ip#{i}"} key={i}>
+                        <div className='field port' id={"in-port-#{i}"} key={i}>
                           <input type='text' defaultValue={5060} readOnly={_.get(react.context.order, 'vs.in.trunk.inbound_checked')} placeholder='5060' className={react.fieldClass('port', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].port")} onChange={react.updateIp.bind(null, i, 'in', 'port')}/>
                         </div>
                       )}
@@ -209,7 +219,7 @@ IPAddressesComponent = React.createClass
                 <div className='column'>
                   <div className='title'>Weight</div>
                       {_.times(react.numIps('in'), (i) ->
-                        <div className='field weight' id={"ip#{i}"} key={i}>
+                        <div className='field weight' id={"in-weight-#{i}"} key={i}>
                           <input type='text' className={react.fieldClass('weight', 'in', i)} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].distro_percent")} onChange={react.updateIp.bind(null, i, 'in', 'distro_percent')} readOnly={react.weightInput()}/>
                         </div>
                       )}
