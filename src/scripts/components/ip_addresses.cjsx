@@ -155,7 +155,7 @@ IPAddressesComponent = React.createClass
       <div className='viewport'>
         <div className='ip-containers'>
           <div className='directions'>
-            <div className={'div' + this.ipClass('out')}/>
+            <div className={'_' + this.ipClass('out') + ' div'}/>
             <div className={this.ipClass('out')}>
               <div className='title'>IP Addresses for Outbound</div>
               <div className='check'/>
@@ -188,7 +188,7 @@ IPAddressesComponent = React.createClass
             </div>
             <div className={this.ipClass('in')}>
               <div className='title'>IP Addresses for Inbound</div>
-              <div className='check'>
+              <div className={'_' + this.ipClass('out') + ' check'}>
                 <label><input type='checkbox' checked={_.get(this.context.order, 'vs.in.trunk.inbound_checked')} onChange={this.inboundCheck} value={true}/>Check here if inbound ips are same as outbound</label>
               </div>
               <div className='columns'>
