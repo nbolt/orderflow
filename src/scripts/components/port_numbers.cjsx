@@ -81,6 +81,12 @@ PortNumbersComponent = React.createClass
     classNames 'tab-pane', pane,
       hidden: !react.state.tab || react.state.tab != pane
 
+  continueText: ->
+    if _.get(this.context.order, 'vs.in.portorders')[0]
+      'Continue'
+    else
+      'Skip'
+
   getInitialState: ->
     tab: 'port'
     order: {numbers: [], invoices: []}
@@ -152,7 +158,7 @@ PortNumbersComponent = React.createClass
       <div className='foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
-          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>{this.continueText()}</a></li>
         </ul>
       </div>
     </div>
