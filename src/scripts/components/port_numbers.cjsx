@@ -26,6 +26,7 @@ PortNumbersComponent = React.createClass
         order = react.state.order
         order.invoices.push({ id: rsp[0]['id'], filename: rsp[0]['filename'] })
         react.setState({ order: order })
+        $('#upload').val('')
 
   edit: (i) ->
     order = _.get(this.context.order, "vs.in.portorders[#{i}]")
@@ -82,10 +83,10 @@ PortNumbersComponent = React.createClass
       hidden: !react.state.tab || react.state.tab != pane
 
   continueText: ->
-    if _.get(this.context.order, 'vs.in.portorders')[0]
-      'Continue'
-    else
+    if _.isEmpty(_.get(this.context.order, 'vs.in.portorders'))
       'Skip'
+    else
+      'Continue'
 
   getInitialState: ->
     tab: 'port'
