@@ -172,7 +172,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Mask</div>
                       {_.times(react.numIps('out'), (i) ->
                         <div className='field mask' id={"out-mask-#{i}"} key={i}>
-                          <Select value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].mask")} options={react.masks()} onChange={react.maskChange.bind(null, i, 'out', 'mask')}/>
+                          <Select placeholder='' value={_.get(react.context.order, "vs.out.trunk.entries[#{i}].mask")} options={react.masks()} onChange={react.maskChange.bind(null, i, 'out', 'mask')}/>
                         </div>
                       )}
                 </div>
@@ -204,7 +204,7 @@ IPAddressesComponent = React.createClass
                   <div className='title'>Mask</div>
                       {_.times(react.numIps('in'), (i) ->
                         <div className='field mask' id={"in-mask-#{i}"} key={i}>
-                          <Select readOnly={_.get(react.context.order, 'vs.in.trunk.inbound_checked')} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].mask")} options={react.masks()} onChange={react.maskChange.bind(null, i, 'in', 'mask')}/>
+                          <Select placeholder='' readOnly={_.get(react.context.order, 'vs.in.trunk.inbound_checked')} value={_.get(react.context.order, "vs.in.trunk.entries[#{i}].mask")} options={react.masks()} onChange={react.maskChange.bind(null, i, 'in', 'mask')}/>
                         </div>
                       )}
                 </div>

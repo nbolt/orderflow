@@ -152,14 +152,19 @@ input
               vertical-align: top
               height: 330px
               border-right: thin solid #ccc
-              .numbers
+              .orders
                 font-size: 0.9em
                 margin: 20px 0 0 20px
-                .number
+                .order
+                  border-bottom: thin solid #ccc
                   margin-bottom: 10px
-                  &:hover
-                    cursor: pointer
-                    color: #999
+                  .edit
+                    font-size: 0.9em
+                  .number, .invoice, .edit
+                    margin-bottom: 10px
+                    &:hover
+                      cursor: pointer
+                      color: #999
               .loading
                 text-align: center
                 color: #999
@@ -437,6 +442,8 @@ input
                 .Select
                   width: 60px
                   height: 33px
+                  .Select-clear
+                    display: none
           &:first-child
             .columns
               width: 85%

@@ -27,10 +27,20 @@ PortNumbersComponent = React.createClass
         order.invoices.push({ id: rsp[0]['id'], filename: rsp[0]['filename'] })
         react.setState({ order: order })
 
+  edit: (i) ->
+    order = _.get(this.context.order, "vs.in.portorders[#{i}]")
+    this.setState({ order: order, editing: i, raw_numbers: order.numbers.join("\n") })
+
   removeNumber: (number) ->
     react = this
     _.each(this.context.order.vs.in.portorders, (order, i) ->
-      react.context.updateOrder([["vs.in.portorders[#{i}].numbers", _.filter(order.numbers, (n) -> n != number)]], false)
+      react.context.updateOrder([["vs.in.portorders[#{i}].numbers", _.filter(order.numbers, (n) -> n != number)]], true)
+    )
+
+  removeInvoice: (id) ->
+    react = this
+    _.each(this.context.order.vs.in.portorders, (order, i) ->
+      react.context.updateOrder([["vs.in.portorders[#{i}].invoices", _.filter(order.invoices, (invoice) -> invoice.id != id)]], true)
     )
 
   updateField: (field, ev) ->
@@ -46,10 +56,10 @@ PortNumbersComponent = React.createClass
   updateRawNumbers: (ev) -> this.setState({ raw_numbers: ev.target.value })
 
   submit: ->
-    react = this
     this.state.order.numbers = _.map(this.state.raw_numbers.split("\n"), (n) -> n.replace(/\D/g, ''))
-    this.context.updateOrder([["vs.in.portorders[#{this.context.order.vs.in.portorders.length}]", this.state.order]], true)
-    this.setState({ order: {numbers:[]}, raw_numbers: '' })
+    i = if _.isInteger(this.state.editing) then this.state.editing else this.context.order.vs.in.portorders.length
+    this.context.updateOrder([["vs.in.portorders[#{i}]", this.state.order]], true)
+    this.setState({ order: {numbers:[]}, raw_numbers: '', editing: false })
 
   selected: (key, value) ->
     react = this
@@ -74,6 +84,7 @@ PortNumbersComponent = React.createClass
   getInitialState: ->
     tab: 'port'
     order: {numbers: [], invoices: []}
+    editing: false
 
   render: ->
     react = this
@@ -106,10 +117,10 @@ PortNumbersComponent = React.createClass
                 <textarea value={this.state.raw_numbers} onChange={this.updateRawNumbers} rows='6' placeholder='Input number list, one per line.'></textarea>
               </div>
               <div className='provider-info'>
-                <input type='text' placeholder='Current Provider' value={this.state.order.provider}/>
-                <input type='text' placeholder='Authorization Name' value={this.state.order.name}/>
-                <input type='text' placeholder='Provider Address' value={this.state.order.address}/>
-                <input type='text' placeholder='PIN Number (if known)' value={this.state.order.pin}/>
+                <input type='text' placeholder='Current Provider' value={this.state.order.provider} onChange={this.updateField.bind(null, 'provider')}/>
+                <input type='text' placeholder='Authorization Name' value={this.state.order.name} onChange={this.updateField.bind(null, 'name')}/>
+                <input type='text' placeholder='Provider Address' value={this.state.order.address} onChange={this.updateField.bind(null, 'address')}/>
+                <input type='text' placeholder='PIN Number (if known)' value={this.state.order.pin} onChange={this.updateField.bind(null, 'pin')}/>
               </div>
               <div className='submit'>
                 <div className='links'>
@@ -121,11 +132,17 @@ PortNumbersComponent = React.createClass
             </div>
             <div className='column list'>
               <div className='title'>Numbers to Port</div>
-              <div className='numbers'>
+              <div className='orders'>
                 {_.map(_.get(this.context.order, 'vs.in.portorders'), (order, i) ->
-                  _.map(order.numbers, (number, i) ->
-                    <div className='number' key={i} onClick={react.removeNumber.bind(null, number)}>{number}</div>
-                  )
+                  <div className='order' key={i}>
+                    <div className='edit' onClick={react.edit.bind(null, i)}>edit</div>
+                    {_.map(order.invoices, (invoice, i) ->
+                      <div className='invoice' key={i} onClick={react.removeInvoice.bind(null, invoice.id)}>{invoice.filename}</div>
+                    )}
+                    {_.map(order.numbers, (number, i) ->
+                      <div className='number' key={i} onClick={react.removeNumber.bind(null, number)}>{number}</div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
