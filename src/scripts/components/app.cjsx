@@ -111,7 +111,17 @@ AppComponent = React.createClass
         react.setState({ cost: rsp['cost'] }) if rsp['cost']
         cb() if cb
       error: (rsp) ->
-        react.setState({ errors: rsp['responseJSON'] }) if _.isArray(rsp['responseJSON'])
+        rsp = rsp['responseJSON']
+        if _.isArray(rsp)
+          react.setState({ errors: rsp })
+          react.err rsp[0][Object.keys(rsp[0])[0]]
+
+  err: (msg) ->
+    $('nav .err').html msg
+    $('nav .err').addClass 'display'
+    setTimeout((->
+      $('nav .err').removeClass 'display'
+    ), 5000)
 
   updateOrder: (values, sync=false) ->
     order = this.state.order || {status: 'in_progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
@@ -150,6 +160,7 @@ AppComponent = React.createClass
       <HeaderComponent email={this.state.email} name={this.state.name} />
       <div id='container'>
         <nav>
+          <div className='err'>0</div>
           <ul className='links'>
             <li><a href="javascript:void(0)" onClick={this.newOrder}>Start new order</a></li>
             <li><Link to="/list">List all customer orders</Link></li>
