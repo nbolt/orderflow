@@ -37,7 +37,7 @@ ListComponent = React.createClass
             <th>ID</th>
             <th>Started On</th>
             <th>Type</th>
-            <th>Completed</th>
+            <th>Current Status</th>
             <th>Options</th>
           </tr>
         </thead>
