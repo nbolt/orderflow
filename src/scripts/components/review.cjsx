@@ -8,7 +8,7 @@ ReviewComponent = React.createClass
     updateOrder: React.PropTypes.func
 
   accept: ->
-    this.context.updateOrder([['status', 'complete']], true)
+    this.context.updateOrder([['status', 'Completed']], true)
     this.context.home()
 
   backClass: ->
