@@ -42,7 +42,10 @@ PortNumbersComponent = React.createClass
   removeNumber: (number) ->
     react = this
     _.each(this.context.order.vs.in.portorders, (order, i) ->
-      react.context.updateOrder([["vs.in.portorders[#{i}].numbers", _.filter(order.numbers, (n) -> n != number)]], true)
+      if _.find(order.numbers, (n) -> n == number)
+        nums = _.filter(order.numbers, (n) -> n != number)
+        react.setState({ raw_numbers: nums.join("\n") })
+        react.context.updateOrder([["vs.in.portorders[#{i}].numbers", nums]], true)
     )
 
   removeInvoice: (id) ->
@@ -60,6 +63,8 @@ PortNumbersComponent = React.createClass
     order = this.state.order
     order[key] = value
     this.setState({ order: order })
+
+  rawNums: -> this.state.raw_numbers && this.state.raw_numbers.split("\n")
 
   updateRawNumbers: (ev) -> this.setState({ raw_numbers: ev.target.value })
 
@@ -112,8 +117,22 @@ PortNumbersComponent = React.createClass
   oInvoices: ->
     _.map(_.get(this.state.order, 'invoices'), (i) -> i.filename).join(', ')
 
+  oInvoices: ->
+    react = this
+    _.map(this.state.order.invoices, (i) ->
+      <div key={i.id} onClick={react.removeInvoice.bind(null, i.id)}>{i.filename}</div>
+    )
+
   oNums: ->
-    _.map(_.get(this.state.order, 'numbers'), (n) -> n).join(', ')
+    react = this
+    if _.isInteger this.state.editing
+      _.map(this.state.order.numbers, (n) ->
+        <div key={n} onClick={react.removeNumber.bind(null, n)}>{n}</div>
+      )
+    else
+      _.map(this.rawNums(), (n) ->
+        <div key={n}>{n}</div>
+      )
 
   toggleModal: ->
     this.setState({ modal: !this.state.modal })
@@ -128,6 +147,7 @@ PortNumbersComponent = React.createClass
       </div>
     else
       <div className='actions'>
+        <div className='action' onClick={this.submitModal}>Close</div>
         <div className='action' onClick={this.submit}>Submit Numbers to Order</div>
       </div>
 
