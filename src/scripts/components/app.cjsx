@@ -100,13 +100,14 @@ AppComponent = React.createClass
   syncOrder: (cb) ->
     react = this
     this.setState({ errors: [] })
+    order = this.state.order || {status: 'in_progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
       method: 'PUT'
       headers: react.state.headers
       dataType: 'json'
       contentType: 'application/json'
-      data: JSON.stringify({ order: react.state.order })
+      data: JSON.stringify({ order: order })
       success: (rsp, w) ->
         react.setState({ cost: rsp['cost'] }) if rsp['cost']
         cb() if cb
@@ -124,7 +125,7 @@ AppComponent = React.createClass
     ), 5000)
 
   updateOrder: (values, sync=false) ->
-    order = this.state.order || {status: 'in_progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
+    order = this.state.order
     _.each(values, (v) -> _.set(order, v[0], v[1]))
     _.set(order, 'vs.in.trunk.inbound_checked', false) unless _.get(order, 'vs._service_direction.bi')
     this.setState({ order: order })
@@ -137,6 +138,7 @@ AppComponent = React.createClass
     this.syncOrder() if sync
 
   getInitialState: ->
+    order: null
     token: process.env.token
     domain: process.env.domain
     headers: {}

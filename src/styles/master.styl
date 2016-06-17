@@ -105,14 +105,17 @@ input
       background-color: #eee
 
 #order-list
-  .order
-    margin: 10px 0
-    &:hover
-      cursor: pointer
-      text-decoration: underline
-    span.attr
-      color: gray
-      font-size: 0.9em
+  table
+    margin-top: 20px
+    width: 540px
+    th, td
+      border: thin solid #ccc
+      padding: 8px 12px
+      text-align: center
+      &.edit
+        &:hover
+          background-color: #eee
+          cursor: pointer
 
 #order-component
   #form
