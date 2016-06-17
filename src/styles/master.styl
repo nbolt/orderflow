@@ -173,9 +173,10 @@ input
                 .order
                   border-bottom: thin solid #ccc
                   margin-bottom: 10px
-                  .edit
+                  .details
                     font-size: 0.9em
-                  .number, .invoice, .edit
+                    margin-bottom: 10px
+                  .number, .invoice, .details
                     margin-bottom: 10px
                     &:hover
                       cursor: pointer
@@ -474,10 +475,48 @@ input
     bottom: inherit !important
     left: 50% !important
     right: inherit !important
-    width: 600px
-    height: 300px
-    margin-left: -300px
     transform: scale(0.5) rotateX(-30deg)
+    &.address
+      width: 600px
+      height: 300px
+      margin-left: -300px
+    &.port-numbers
+      width: 720px
+      height: 400px
+      margin-left: -360px
+      position: relative
+      .actions
+        position: absolute
+        bottom: 20px
+        .action
+          display: inline-block
+          vertical-align: top
+          border-right: thin solid #ccc
+          padding: 0 20px
+          &:first-child
+            padding-left: 0
+          &:last-child
+            border-right: 0
+          &:hover
+            cursor: pointer
+            text-decoration: underline
+      .fields
+        .field
+          display: inline-block
+          vertical-align: top
+          margin: 0 20px 20px 0
+          &.third
+            width: 200px
+          &.half
+            width: 300px
+          &.full
+            width: 600px
+          .label, .value
+            display: inline-block
+            vertical-align: top
+          .label
+            font-weight: 600
+            width: 100px
     &.ReactModal__Content--after-open
       transform: scale(1) rotateX(0deg) !important
       transition: all 150ms ease-in
