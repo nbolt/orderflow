@@ -75,6 +75,7 @@ AppComponent = React.createClass
 
   newOrder: ->
     react = this
+    react.setState({ order: null })
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders"
       method: 'POST'
@@ -95,7 +96,7 @@ AppComponent = React.createClass
       success: (rsp) ->
         first = if react.state.order then false else true
         react.setState({ order: rsp.order })
-        react.syncOrder() if first
+        react.syncOrder(react.fetchOrder) if first
 
   syncOrder: (cb) ->
     react = this

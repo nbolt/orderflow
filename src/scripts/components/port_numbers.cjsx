@@ -1,3 +1,5 @@
+Modal = ReactModal
+
 PortNumbersComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
@@ -6,6 +8,7 @@ PortNumbersComponent = React.createClass
     nav: React.PropTypes.func
     order: React.PropTypes.object
     updateOrder: React.PropTypes.func
+    removeArrayElement: React.PropTypes.func
 
   invoice: -> $('#upload').click()
 
@@ -32,6 +35,10 @@ PortNumbersComponent = React.createClass
     order = _.get(this.context.order, "vs.in.portorders[#{i}]")
     this.setState({ order: order, editing: i, raw_numbers: order.numbers.join("\n") })
 
+  remove: ->
+    this.context.removeArrayElement([["vs.in.portorders", this.state.editing]], true)
+    this.close()
+
   removeNumber: (number) ->
     react = this
     _.each(this.context.order.vs.in.portorders, (order, i) ->
@@ -56,11 +63,17 @@ PortNumbersComponent = React.createClass
 
   updateRawNumbers: (ev) -> this.setState({ raw_numbers: ev.target.value })
 
+  close: -> this.setState({ order: {numbers:[],invoices:[]}, raw_numbers: '', editing: false, modal: false })
+
   submit: ->
     this.state.order.numbers = _.map(this.state.raw_numbers.split("\n"), (n) -> n.replace(/\D/g, ''))
     i = if _.isInteger(this.state.editing) then this.state.editing else this.context.order.vs.in.portorders.length
     this.context.updateOrder([["vs.in.portorders[#{i}]", this.state.order]], true)
-    this.setState({ order: {numbers:[]}, raw_numbers: '', editing: false })
+    this.close()
+
+  submitModal: (i) ->
+    this.setState({ modal: !this.state.modal })
+    this.edit i if _.isInteger i
 
   selected: (key, value) ->
     react = this
@@ -88,14 +101,87 @@ PortNumbersComponent = React.createClass
     else
       'Continue'
 
+  oType: ->
+    type = _.get(this.state.order, 'type')
+    type == 'tfn' && 'Toll Free' || type == 'did' && 'DID'
+
+  oPort: ->
+    full = _.get(this.state.order, 'full')
+    full && 'Full' || 'Partial'
+
+  oInvoices: ->
+    _.map(_.get(this.state.order, 'invoices'), (i) -> i.filename).join(', ')
+
+  oNums: ->
+    _.map(_.get(this.state.order, 'numbers'), (n) -> n).join(', ')
+
+  toggleModal: ->
+    this.setState({ modal: !this.state.modal })
+
+  modalNav: ->
+    if _.isInteger this.state.editing
+      <div className='actions'>
+        <div className='action' onClick={this.close}>Close</div>
+        <div className='action' onClick={this.submitModal}>Edit</div>
+        <div className='action' onClick={this.remove}>Remove</div>
+        <div className='action' onClick={this.submit}>Submit</div>
+      </div>
+    else
+      <div className='actions'>
+        <div className='action' onClick={this.submit}>Submit Numbers to Order</div>
+      </div>
+
   getInitialState: ->
     tab: 'port'
     order: {numbers: [], invoices: []}
     editing: false
+    modal: false
 
   render: ->
     react = this
     <div id='port-numbers'>
+      <Modal className='port-numbers' isOpen={this.state.modal}>
+        <h1>Order Details</h1>
+        <div className='fields'>
+          <div className='field third'>
+            <div className='label'>Type:</div>
+            <div className='value'>{this.oType()}</div>
+          </div>
+          <div className='field third'>
+            <div className='label'>Billing #:</div>
+            <div className='value'>{_.get(this.state.order, 'btn')}</div>
+          </div>
+          <div className='field third'>
+            <div className='label'>Port:</div>
+            <div className='value'>{this.oPort()}</div>
+          </div>
+          <div className='field third'>
+            <div className='label'>Provider:</div>
+            <div className='value'>{_.get(this.state.order, 'provider')}</div>
+          </div>
+          <div className='field third'>
+            <div className='label'>PIN:</div>
+            <div className='value'>{_.get(this.state.order, 'pin')}</div>
+          </div>
+          <div className='field third'>
+            <div className='label'>Auth Name:</div>
+            <div className='value'>{_.get(this.state.order, 'name')}</div>
+          </div>
+          <div className='field half'>
+            <div className='label'>Address:</div>
+            <div className='value'>{_.get(this.state.order, 'address')}</div>
+          </div>
+          <div className='field half'>
+            <div className='label'>Invoices:</div>
+            <div className='value'>{this.oInvoices()}</div>
+          </div>
+          <div className='field full'>
+            <div className='label'>Numbers:</div>
+            <div className='value'>{this.oNums()}</div>
+          </div>
+        </div>
+        {this.modalNav()}
+      </Modal>
       <div className='viewport'>
         <div className='tabs'>
           <div className={this.tabClass('port')} onClick={this.tab.bind(null, 'did')}>TFN & DID Port</div>
@@ -132,7 +218,7 @@ PortNumbersComponent = React.createClass
               <div className='submit'>
                 <div className='links'>
                   <div className='link' onClick={this.invoice}>Upload Invoice</div>
-                  <div className='link' onClick={this.submit}>Submit Numbers to Order</div>
+                  <div className='link' onClick={this.submitModal}>Submit Numbers to Order</div>
                 </div>
                 <input id='upload' type='file' onChange={this.upload}/>
               </div>
@@ -142,7 +228,7 @@ PortNumbersComponent = React.createClass
               <div className='orders'>
                 {_.map(_.get(this.context.order, 'vs.in.portorders'), (order, i) ->
                   <div className='order' key={i}>
-                    <div className='edit' onClick={react.edit.bind(null, i)}>edit</div>
+                    <div className='details' onClick={react.submitModal.bind(null, i)}>details</div>
                     {_.map(order.invoices, (invoice, i) ->
                       <div className='invoice' key={i} onClick={react.removeInvoice.bind(null, invoice.id)}>{invoice.filename}</div>
                     )}

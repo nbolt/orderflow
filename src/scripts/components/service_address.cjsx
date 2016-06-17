@@ -107,7 +107,7 @@ ServiceAddressComponent = React.createClass
   render: ->
     react = this
     <div id='service-address'>
-      <Modal isOpen={this.state.modal}>
+      <Modal className='address' isOpen={this.state.modal}>
         <h1>Address Verification</h1>
         <div className='addresses'>
           {_.map(this.state.addresses, (address, i) ->
