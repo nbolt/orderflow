@@ -35,10 +35,10 @@ ListComponent = React.createClass
         <thead>
           <tr>
             <th>ID</th>
-            <th>Created</th>
+            <th>Created On</th>
             <th>Type</th>
             <th>Completed</th>
-            <th>Edit</th>
+            <th>Options</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +48,7 @@ ListComponent = React.createClass
               <td>{react.created(o.created_ts)}</td>
               <td>{react.type(o)}</td>
               <td>{_.get(o, 'order.status')}</td>
-              <td className='edit' onClick={react.nav.bind(null, o.ident)}></td>
+              <td className='edit'><a className="edit" onClick={react.nav.bind(null, o.ident)}>Edit</a></td>
             </tr>
           )}
         </tbody>
