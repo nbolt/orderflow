@@ -224,17 +224,11 @@ PortNumbersComponent = React.createClass
               </div>
             </div>
             <div className='column list'>
-              <div className='title'>Numbers to Port</div>
+              <div className='title'>Port Orders</div>
               <div className='orders'>
                 {_.map(_.get(this.context.order, 'vs.in.portorders'), (order, i) ->
                   <div className='order' key={i}>
-                    <div className='details' onClick={react.submitModal.bind(null, i)}>details</div>
-                    {_.map(order.invoices, (invoice, i) ->
-                      <div className='invoice' key={i} onClick={react.removeInvoice.bind(null, invoice.id)}>{invoice.filename}</div>
-                    )}
-                    {_.map(order.numbers, (number, i) ->
-                      <div className='number' key={i} onClick={react.removeNumber.bind(null, number)}>{number}</div>
-                    )}
+                    <div className='details' onClick={react.submitModal.bind(null, i)}>{order.btn}</div>
                   </div>
                 )}
               </div>
