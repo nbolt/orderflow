@@ -101,7 +101,7 @@ AppComponent = React.createClass
   syncOrder: (cb) ->
     react = this
     this.setState({ errors: [] })
-    order = this.state.order || {status: 'in_progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
+    order = this.state.order || {status: 'In Progress', vs:{_enabled:false,call_paths:100,_cpsin:20,_cpsout:20,codec:{rtp:{G711u64K:true, G729a:false, G722:false},dtmf:{RFC2833:true, inband:false},fax:{T38Fallback:true, T38:false, G711:false}},apeironIPprimary:{ip:'66.85.56.10/32',port:'5060'},apeironIPsecondary:{ip:'66.85.57.10/32',port:'5060'},in:{all:[],trunk:{entries:[]},portorders:[]}},sms:{_enabled:false,_mpsin:1,_mpsout:1}}
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
       method: 'PUT'
