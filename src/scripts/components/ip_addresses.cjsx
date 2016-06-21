@@ -4,6 +4,7 @@ IPAddressesComponent = React.createClass
     order: React.PropTypes.object
     updateOrder: React.PropTypes.func
     removeArrayElement: React.PropTypes.func
+    continueText: React.PropTypes.func
 
   numIps: (dir) -> (_.get(this.context.order, "vs.#{dir}.trunk.entries.length") || 0) + 1
 
@@ -240,7 +241,7 @@ IPAddressesComponent = React.createClass
       <div className='foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
-          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>{this.context.continueText('ip_addresses')}</a></li>
         </ul>
       </div>
     </div>

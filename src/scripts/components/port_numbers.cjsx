@@ -9,6 +9,7 @@ PortNumbersComponent = React.createClass
     order: React.PropTypes.object
     updateOrder: React.PropTypes.func
     removeArrayElement: React.PropTypes.func
+    continueText: React.PropTypes.func
 
   invoice: -> $('#upload').click()
 
@@ -99,12 +100,6 @@ PortNumbersComponent = React.createClass
     react = this
     classNames 'tab-pane', pane,
       hidden: !react.state.tab || react.state.tab != pane
-
-  continueText: ->
-    if _.isEmpty(_.get(this.context.order, 'vs.in.portorders'))
-      'Skip'
-    else
-      'Continue'
 
   oType: ->
     type = _.get(this.state.order, 'type')
@@ -259,7 +254,7 @@ PortNumbersComponent = React.createClass
       <div className='foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
-          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>{this.continueText()}</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>{this.context.continueText('port_numbers')}</a></li>
         </ul>
       </div>
     </div>

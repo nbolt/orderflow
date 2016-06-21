@@ -10,15 +10,40 @@ OrderComponent = React.createClass
   childContextTypes:
     nav: React.PropTypes.func
     home: React.PropTypes.func
+    continueText: React.PropTypes.func
 
   getChildContext: ->
     nav: this.nav
     home: this.home
+    continueText: this.continueText
 
   componentDidMount: ->
     this.context.fetchOrder()
 
   home: -> this.props.history.push("/order/#{this.props.params.ident}")
+
+  displayPane:
+    service_type: 'Service Type'
+    service_address: 'Service Address'
+    existing_numbers: 'Existing Numbers'
+    ip_addresses: 'IP Addresses'
+    new_numbers: 'New Numbers'
+    trunk_config: 'Trunk Configuration'
+    port_numbers: 'Port Numbers'
+    number_features: 'Number Features'
+    review: 'Quote & Review'
+
+  continueText: (path) ->
+    panes = switch
+      when _.get(this.context, 'order.sms._enabled')
+        ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+      when _.get(this.context, 'order.vs._enabled')
+        ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
+      else
+        ['service_type', 'service_address']
+    index = _.indexOf(panes, path)
+    pane = this.displayPane[panes[index+1]]
+    "Continue to #{pane}"
 
   nav: (dir, path) ->
     react = this

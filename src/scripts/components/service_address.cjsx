@@ -12,6 +12,7 @@ ServiceAddressComponent = React.createClass
     address: React.PropTypes.object
     validateAddress: React.PropTypes.func
     addressValidated: React.PropTypes.bool
+    continueText: React.PropTypes.func
 
   validateAddress: ->
     react = this
@@ -149,7 +150,7 @@ ServiceAddressComponent = React.createClass
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
           <li className={this.validateClass()}><a href='javascript:void(0)' onClick={this.validateAddress}>Validate</a></li>
           <li className={this.releaseClass()}><a href='javascript:void(0)' onClick={this.releaseAddress}>Release</a></li>
-          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>{this.context.continueText('service_address')}</a></li>
         </ul>
       </div>
     </div>
