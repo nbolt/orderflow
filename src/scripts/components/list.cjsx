@@ -6,7 +6,7 @@ ListComponent = React.createClass
 
   nav: (ident) -> this.props.history.push("/order/#{ident}/service_type")
 
-  created: (ts) -> moment(ts * 1000).format 'MM/DD/YY'
+  created: (ts) -> moment(ts * 1000).format 'MM/DD/YY, HH:mm'
 
   type: (order) ->
     voice  = _.get(order, 'order.vs._enabled')
