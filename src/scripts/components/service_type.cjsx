@@ -23,6 +23,9 @@ ServiceTypeComponent = React.createClass
     classNames
       selected: _.get(this.context.order, path)
 
+  port_numbers: (ev) -> this.context.updateOrder([['vs.in.port_numbers', ev.target.checked]], false)
+  new_numbers:  (ev) -> this.context.updateOrder([['vs.in.new_numbers', ev.target.checked]], false)
+
   backClass: ->
 
   continueClass: ->
@@ -85,6 +88,17 @@ ServiceTypeComponent = React.createClass
                 <input value={_.get(this.context, 'order.sms._mpsout')} onChange={this.updateInput.bind(null, 'sms._mpsout')} type='text'/>
               </div>
             </div>
+          </div>
+        </div>
+        <div className='qs'>
+          <div className='title'>Will you be:</div>
+          <div className='field'>
+            <div className='check'><input type='checkbox' checked={_.get(this.context.order, 'vs.in.port_numbers')} onChange={this.port_numbers}/></div>
+            <div className='label'>porting numbers?</div>
+          </div>
+          <div className='field'>
+            <div className='check'><input type='checkbox' checked={_.get(this.context.order, 'vs.in.new_numbers')} onChange={this.new_numbers}/></div>
+            <div className='label'>adding new numbers?</div>
           </div>
         </div>
       </div>

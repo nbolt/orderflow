@@ -36,9 +36,9 @@ OrderComponent = React.createClass
   continueText: (path) ->
     panes = switch
       when _.get(this.context, 'order.sms._enabled')
-        ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+        this.sms()
       when _.get(this.context, 'order.vs._enabled')
-        ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
+        this.vs()
       else
         ['service_type', 'service_address']
     index = _.indexOf(panes, path)
@@ -50,21 +50,27 @@ OrderComponent = React.createClass
     this.context.syncOrder(->
       panes = switch
         when _.get(react.context, 'order.sms._enabled')
-          ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+          react.sms()
         when _.get(react.context, 'order.vs._enabled')
-          ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
-        else
-          ['service_type']
+          react.vs()
       index = _.indexOf(panes, path)
       n = if dir == 'back' then -1 else 1
       react.props.history.push("/order/#{react.props.params.ident}/#{panes[index+n]}")
     )
 
+  sms: -> ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+
+  vs: ->
+    vs = ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
+    _.remove(vs, (pane) -> pane == 'port_numbers') unless _.get(this.context.order, 'vs.in.port_numbers')
+    _.remove(vs, (pane) -> pane == 'new_numbers')  unless _.get(this.context.order, 'vs.in.new_numbers')
+    vs
+
   linkClass: (path) ->
     order = this.context.order
     classNames path,
       selected: this.props.routes[2] && this.props.routes[2].path == path
-      hidden: !order.vs && !order.sms || _.get(this.context, 'order.sms._enabled') && !_.includes(['service_type', 'service_address', 'existing_numbers', 'new_numbers'], path) || _.get(this.context, 'order.vs._enabled') && !_.includes(['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review'], path)
+      hidden: !order.vs && !order.sms || _.get(this.context, 'order.sms._enabled') && !_.includes(this.sms(), path) || _.get(this.context, 'order.vs._enabled') && !_.includes(this.vs(), path)
 
   render: ->
     <div id='order-component'>
