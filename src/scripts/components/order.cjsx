@@ -58,12 +58,13 @@ OrderComponent = React.createClass
       react.props.history.push("/order/#{react.props.params.ident}/#{panes[index+n]}")
     )
 
-  sms: -> ['service_type', 'service_address', 'existing_numbers', 'new_numbers']
+  sms: -> ['service_type', 'service_address', 'new_numbers', 'existing_numbers', 'review']
 
   vs: ->
     vs = ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
     _.remove(vs, (pane) -> pane == 'port_numbers') if !_.get(this.context.order, 'vs.in.port_numbers') || _.get(this.context.order, 'vs._service_direction.out')
     _.remove(vs, (pane) -> pane == 'new_numbers')  if !_.get(this.context.order, 'vs.in.new_numbers') || _.get(this.context.order, 'vs._service_direction.out')
+    _.remove(vs, (pane) -> pane == 'number_features')  if (!_.get(this.context.order, 'vs.in.new_numbers') && !_.get(this.context.order, 'vs.in.port_numbers')) || _.get(this.context.order, 'vs._service_direction.out')
     vs
 
   linkClass: (path) ->
