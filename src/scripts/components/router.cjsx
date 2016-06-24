@@ -12,9 +12,9 @@ RouterComponent = React.createClass
           <Route path="service_address" component={ServiceAddressComponent} />
           <Route path="ip_addresses" component={IPAddressesComponent} />
           <Route path="trunk_config" component={TrunkConfigComponent} />
-          <Route path="existing_numbers" component={ExistingNumbersComponent} />
           <Route path="new_numbers" component={NewNumbersComponent} />
           <Route path="port_numbers" component={PortNumbersComponent} />
+          <Route path="existing_numbers" component={ExistingNumbersComponent} />
           <Route path="number_features" component={NumberFeaturesComponent} />
           <Route path="review" component={ReviewComponent} />
         </Route>

@@ -70,7 +70,7 @@ OrderComponent = React.createClass
     order = this.context.order
     classNames path,
       selected: this.props.routes[2] && this.props.routes[2].path == path
-      hidden: !order.vs && !order.sms || _.get(this.context, 'order.sms._enabled') && !_.includes(this.sms(), path) || _.get(this.context, 'order.vs._enabled') && !_.includes(this.vs(), path)
+      hidden: (!_.get(this.context, 'order.sms._enabled') && !_.get(this.context, 'order.vs._enabled') && !_.get(this.context, 'order.webrtc._enabled')) || _.get(this.context, 'order.sms._enabled') && !_.includes(this.sms(), path) || _.get(this.context, 'order.vs._enabled') && !_.includes(this.vs(), path)
 
   render: ->
     <div id='order-component'>
@@ -82,9 +82,9 @@ OrderComponent = React.createClass
               <li className={this.linkClass('service_address')}><Link to="/order/#{this.props.params.ident}/service_address">Service Address</Link></li>
               <li className={this.linkClass('ip_addresses')}><Link to="/order/#{this.props.params.ident}/ip_addresses">IP Addresses</Link></li>
               <li className={this.linkClass('trunk_config')}><Link to="/order/#{this.props.params.ident}/trunk_config">Trunk Configuration</Link></li>
-              <li className={this.linkClass('existing_numbers')}><Link to="/order/#{this.props.params.ident}/existing_numbers">Existing Numbers</Link></li>
               <li className={this.linkClass('new_numbers')}><Link to="/order/#{this.props.params.ident}/new_numbers">New Numbers</Link></li>
               <li className={this.linkClass('port_numbers')}><Link to="/order/#{this.props.params.ident}/port_numbers">Port Numbers</Link></li>
+              <li className={this.linkClass('existing_numbers')}><Link to="/order/#{this.props.params.ident}/existing_numbers">Existing Numbers</Link></li>
               <li className={this.linkClass('number_features')}><Link to="/order/#{this.props.params.ident}/number_features">Number Features</Link></li>
               <li className={this.linkClass('review')}><Link to="/order/#{this.props.params.ident}/review">Quote & Review</Link></li>
             </ul>

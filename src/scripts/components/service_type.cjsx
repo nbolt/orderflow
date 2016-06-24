@@ -28,7 +28,7 @@ ServiceTypeComponent = React.createClass
 
   qs: ->
     classNames 'qs',
-      hidden: _.get(this.context.order, 'vs._service_direction.out')
+      hidden: (!_.get(this.context.order, 'vs._service_direction.bi') && !_.get(this.context.order, 'vs._service_direction.in')) || (!_.get(this.context.order, 'vs._enabled') && !_.get(this.context.order, 'sms._enabled') && !_.get(this.context.order, 'webrtc._enabled'))
 
   backClass: ->
 
