@@ -167,10 +167,10 @@ input
               vertical-align: top
               height: 330px
               border-right: thin solid #ccc
-              .orders
+              .orders, .numbers
                 font-size: 0.9em
                 margin: 20px 0 0 20px
-                .order
+                .order, .number
                   margin-bottom: 10px
                   .details
                     margin-bottom: 10px
@@ -348,6 +348,26 @@ input
             .Select
               width: 188px
               margin: 0 0 10px 20px
+          .field
+            &.text
+              width: 30%
+              margin: 0 auto 10px
+              input
+                text-align: center
+              &:first-child
+                margin: 0 12% 0 14%
+              &.full
+                width: 83%
+                margin-left: 20px
+                input
+                  text-align: left
+          .search
+            color: #7c8082
+            text-align: center
+            margin-top: 40px
+            &:hover
+              cursor: pointer
+              text-decoration: underline
           .search-tabs
             text-align: center
             margin: 20px 0

@@ -25,7 +25,7 @@ NewNumbersComponent = React.createClass
         switch this.state.tfn.search
           when 'npa'
             data.npa = this.state.tfn.npa
-            data.nxx = ''
+            data.nxx = this.state.tfn.nxx
     if data.rate_center && data.state || this.state.tab == 'did' && data.npa && data.nxx || this.state.tab == 'tfn' && data.npa
       react.setState({ loading: true })
       $.ajax
@@ -101,29 +101,23 @@ NewNumbersComponent = React.createClass
 
   tab: (pane) -> this.setState({ tab: pane })
 
-  didFieldChange: (field, data) ->
-    did   = this.state.did
-    did[field] = data && data.value
-    this.setState({ did: did })
-    this.searchNumbers()
+  selectChange: (type, field, data) ->
+    state = this.state
+    type = state[type]
+    type[field] = data && data.value
+    this.setState state
 
-  tfnFieldChange: (field, data) ->
-    tfn   = this.state.tfn
-    tfn[field] = data && data.value
-    this.setState({ tfn: tfn })
-    this.searchNumbers()
+  fieldChange: (type, field, ev) ->
+    state = this.state
+    type = state[type]
+    type[field] = ev.target.value
+    this.setState state
 
-  didSearchTab: (pane) ->
-    did = this.state.did
-    did.search = pane
-    this.setState({ did: did })
-    this.searchNumbers()
-
-  tfnSearchTab: (pane) ->
-    tfn = this.state.tfn
-    tfn.search = pane
-    this.setState({ tfn: tfn })
-    this.searchNumbers()
+  searchTab: (type, pane) ->
+    state = this.state
+    type  = state[type]
+    type.search = pane
+    this.setState state
 
   backClass: ->
 
@@ -139,27 +133,15 @@ NewNumbersComponent = React.createClass
     classNames 'tab-pane', pane,
       hidden: !react.state.tab || react.state.tab != pane
 
-  didSearchPaneClass: (pane) ->
+  searchPaneClass: (type, pane) ->
     react = this
-    classNames 'did-search-pane', pane,
-      hidden: !react.state.tab || react.state.did.search != pane
+    classNames "#{type}-search-pane", pane,
+      hidden: !react.state.tab || react.state[type].search != pane
 
-  didSearchTabClass: (tab) ->
-    react = this
-    classNames 'search-tab',
-      selected: tab == react.state.did.search
-
-  tfnSearchPaneClass: (pane) ->
-    react = this
-    classNames 'tfn-search-pane', pane,
-      hidden: !react.state.tab || react.state.tfn.search != pane
-
-
-  tfnSearchTabClass: (tab) ->
+  searchTabClass: (type, tab) ->
     react = this
     classNames 'search-tab',
-      selected: tab == react.state.tfn.search
-
+      selected: tab == react.state[type].search
 
   loadingClass: ->
     react = this
@@ -167,31 +149,58 @@ NewNumbersComponent = React.createClass
       hidden: !react.state.loading
 
   didStates: -> [
-    { value: 'TX', label: 'Texas' }
+    { value: 'AL', label: 'Alabama' },
+    { value: 'AK', label: 'Alaska' },
+    { value: 'AZ', label: 'Arizona' },
+    { value: 'AR', label: 'Arkansas' },
+    { value: 'CA', label: 'California' },
+    { value: 'CO', label: 'Colorado' },
+    { value: 'CT', label: 'Connecticut' },
+    { value: 'DE', label: 'Delaware' },
+    { value: 'FL', label: 'Florida' },
+    { value: 'GA', label: 'Georgia' },
+    { value: 'HI', label: 'Hawaii' },
+    { value: 'ID', label: 'Idaho' },
+    { value: 'IL', label: 'Illinois' },
+    { value: 'IN', label: 'Indiana' },
+    { value: 'IA', label: 'Iowa' },
+    { value: 'KS', label: 'Kansas' },
+    { value: 'KY', label: 'Kentucky' },
+    { value: 'LA', label: 'Louisiana' },
+    { value: 'ME', label: 'Maine' },
+    { value: 'MD', label: 'Maryland' },
+    { value: 'MA', label: 'Massachusetts' },
+    { value: 'MI', label: 'Michigan' },
+    { value: 'MN', label: 'Minnesota' },
+    { value: 'MS', label: 'Mississippi' },
+    { value: 'MO', label: 'Missouri' },
+    { value: 'MT', label: 'Montana' },
+    { value: 'NE', label: 'Nebraska' },
+    { value: 'NV', label: 'Nevada' },
+    { value: 'NH', label: 'New Hampshire' },
+    { value: 'NJ', label: 'New Jersey' },
+    { value: 'NM', label: 'New Mexico' },
+    { value: 'NY', label: 'New York' },
+    { value: 'NC', label: 'North Carolina' },
+    { value: 'ND', label: 'North Dakota' },
+    { value: 'OH', label: 'Ohio' },
+    { value: 'OK', label: 'Oklahoma' },
+    { value: 'OR', label: 'Oregon' },
+    { value: 'PA', label: 'Pennsylvania' },
+    { value: 'RI', label: 'Rhode Island' },
+    { value: 'SC', label: 'South Carolina' },
+    { value: 'SD', label: 'South Dakota' },
+    { value: 'TN', label: 'Tennessee' },
+    { value: 'TX', label: 'Texas' },
+    { value: 'UT', label: 'Utah' },
+    { value: 'VT', label: 'Vermont' },
+    { value: 'VA', label: 'Virginia' },
+    { value: 'WA', label: 'Washington' },
+    { value: 'WV', label: 'West Virginia' },
+    { value: 'WI', label: 'Wisconsin' },
+    { value: 'WY', label: 'Wyoming' },
+    { value: 'DC', label: 'District of Columbia' }
   ]
-
-  didCities: ->
-    switch this.state.did.state
-      when 'TX'
-        [
-          { value: 'Cisco', label: 'Cisco' }
-        ]
-
-  didNpas: ->
-    _.map([818, 562], (n) -> { value: n, label: n })
-
-  didNxxs: ->
-    switch this.state.did.npa
-      when 818
-        _.map([338, 661], (n) -> { value: n, label: n })
-      when 562
-        _.map([391, 742], (n) -> { value: n, label: n })
-
-  tfnNpas: ->
-    _.map([888], (n) -> { value: n, label: n })
-
-  tfnNxxs: ->
-    _.map([415], (n) -> { value: n, label: n })
 
   dids: ->
     react = this
@@ -230,19 +239,26 @@ NewNumbersComponent = React.createClass
             <div className='column parameters'>
               <div className='title'>Search Criteria</div>
               <div className='search-tabs'>
-                <div className={this.didSearchTabClass('city')} onClick={this.didSearchTab.bind(null, 'city')}>City / State</div>
-                <div className={this.didSearchTabClass('npa')} onClick={this.didSearchTab.bind(null, 'npa')}>NPA / NXX</div>
+                <div className={this.searchTabClass('did', 'city')} onClick={this.searchTab.bind(null, 'did', 'city')}>City / State</div>
+                <div className={this.searchTabClass('did', 'npa')} onClick={this.searchTab.bind(null, 'did', 'npa')}>NPA / NXX</div>
               </div>
               <div className='search-panes'>
-                <div className={this.didSearchPaneClass('city')}>
-                  <Select value={this.state.did.state} options={this.didStates()} onChange={this.didFieldChange.bind(null, 'state')}/>
-                  <Select value={this.state.did.city} options={this.didCities()} onChange={this.didFieldChange.bind(null, 'city')}/>
+                <div className={this.searchPaneClass('did', 'city')}>
+                  <Select value={this.state.did.state} options={this.didStates()} onChange={this.selectChange.bind(null, 'did', 'state')}/>
+                  <div className='field text full'>
+                    <input type='text' placeholder='City' value={this.state.did.city} onChange={this.fieldChange.bind(null, 'did', 'city')}/>
+                  </div>
                 </div>
-                <div className={this.didSearchPaneClass('npa')}>
-                  <Select value={this.state.did.npa} options={this.didNpas()} onChange={this.didFieldChange.bind(null, 'npa')}/>
-                  <Select value={this.state.did.nxx} options={this.didNxxs()} onChange={this.didFieldChange.bind(null, 'nxx')}/>
+                <div className={this.searchPaneClass('did', 'npa')}>
+                  <div className='field text'>
+                    <input type='text' placeholder='NPA' value={this.state.did.npa} onChange={this.fieldChange.bind(null, 'did', 'npa')}/>
+                  </div>
+                  <div className='field text'>
+                    <input type='text' placeholder='NXX' value={this.state.did.nxx} onChange={this.fieldChange.bind(null, 'did', 'nxx')}/>
+                  </div>
                 </div>
               </div>
+              <div className='search' onClick={this.searchNumbers}>Search</div>
               <div className={this.loadingClass()}>loading...</div>
             </div>
             <div className='column results'>
@@ -266,14 +282,19 @@ NewNumbersComponent = React.createClass
             <div className='column parameters'>
               <div className='title'>Search Criteria</div>
               <div className='search-tabs'>
-                <div className={this.tfnSearchTabClass('npa')} onClick={this.tfnSearchTab.bind(null, 'npa')}>NPA / NXX</div>
+                <div className={this.searchTabClass('tfn', 'npa')} onClick={this.searchTab.bind(null, 'tfn', 'npa')}>NPA / NXX</div>
               </div>
               <div className='search-panes'>
-                <div className={this.tfnSearchPaneClass('npa')}>
-                  <Select value={this.state.tfn.npa} options={this.tfnNpas()} onChange={this.tfnFieldChange.bind(null, 'npa')}/>
-                  <Select value={this.state.tfn.nxx} options={this.tfnNxxs()} onChange={this.tfnFieldChange.bind(null, 'nxx')}/>
+                <div className={this.searchPaneClass('tfn', 'npa')}>
+                  <div className='field text'>
+                    <input type='text' placeholder='NPA' value={this.state.tfn.npa} onChange={this.fieldChange.bind(null, 'tfn', 'npa')}/>
+                  </div>
+                  <div className='field text'>
+                    <input type='text' placeholder='NXX' value={this.state.tfn.nxx} onChange={this.fieldChange.bind(null, 'tfn', 'nxx')}/>
+                  </div>
                 </div>
               </div>
+              <div className='search' onClick={this.searchNumbers}>Search</div>
               <div className={this.loadingClass()}>loading...</div>
             </div>
             <div className='column results'>
