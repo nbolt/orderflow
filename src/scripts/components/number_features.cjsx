@@ -5,19 +5,31 @@ NumberFeaturesComponent = React.createClass
     updateOrder: React.PropTypes.func
 
   toggle: (n, attr) ->
-    all = _.get(this.context.order, 'vs.in.all')
-    num = _.find(all, (num) -> n.number == num.number)
-    if num[attr]
-      num[attr] = false
-    else
-      num[attr] = true
-    this.context.updateOrder([['vs.in.all', all]], true)
+    switch n.action
+      when 'new'
+        all = _.get(this.context.order, 'vs.in.all')
+        num = _.find(all, (num) -> n.number == num.number)
+        if num[attr]
+          num[attr] = false
+        else
+          num[attr] = true
+        this.context.updateOrder([['vs.in.all', all]], true)
+      when 'port'
+        orders = _.get(this.context.order, 'vs.in.portorders')
+        obj = null
+        _.each(orders, (order) ->
+          num = _.find(order.numbers, (num) -> num.number == n.number)
+          obj = num if num
+        )
+        if obj[attr]
+          obj[attr] = false
+        else
+          obj[attr] = true
+        this.context.updateOrder([['vs.in.portorders', orders]], true)
 
   numbers: ->
-    n = _.get(this.context.order, 'vs.in.all') || []
-    p = _.get(this.context.order, 'vs.in.portorder.numbers') || []
-    n = _.map(n, (n) -> n.action = 'new'; n)
-    p = _.map(p, (n) -> n.action = 'port'; n)
+    n = _.map(_.get(this.context.order, 'vs.in.all'), (n) -> n.action = 'new'; n)
+    p = _.flatten _.map(_.get(this.context.order, 'vs.in.portorders'), (order) -> _.map(order.numbers, (n) -> n.action = 'port'; n.type = order.type; n))
     _.concat(n, p)
 
   attr: (n, attr) ->
@@ -31,10 +43,21 @@ NumberFeaturesComponent = React.createClass
       </div>
 
   attrInput: (n, attr, ev) ->
-    all = _.get(this.context.order, 'vs.in.all')
-    num = _.find(all, (num) -> n.number == num.number)
-    num[attr] = ev.target.value
-    this.context.updateOrder([['vs.in.all', all]], true)
+    switch n.action
+      when 'new'
+        all = _.get(this.context.order, 'vs.in.all')
+        num = _.find(all, (num) -> n.number == num.number)
+        num[attr] = ev.target.value
+        this.context.updateOrder([['vs.in.all', all]], true)
+      when 'port'
+        orders = _.get(this.context.order, 'vs.in.portorders')
+        obj = null
+        _.each(orders, (order) ->
+          num = _.find(order.numbers, (num) -> num.number == n.number)
+          obj = num if num
+        )
+        obj[attr] = ev.target.value
+        this.context.updateOrder([['vs.in.portorders', orders]], true)
 
   backClass: ->
 

@@ -34,7 +34,7 @@ PortNumbersComponent = React.createClass
 
   edit: (i) ->
     order = _.get(this.context.order, "vs.in.portorders[#{i}]")
-    this.setState({ order: order, editing: i, raw_numbers: order.numbers.join("\n") })
+    this.setState({ order: order, editing: i, raw_numbers: _.map(order.numbers, (n) -> n.number).join("\n") })
 
   remove: ->
     this.context.removeArrayElement([["vs.in.portorders", this.state.editing]], true)
@@ -43,8 +43,8 @@ PortNumbersComponent = React.createClass
   removeNumber: (number) ->
     react = this
     _.each(this.context.order.vs.in.portorders, (order, i) ->
-      if _.find(order.numbers, (n) -> n == number)
-        nums = _.filter(order.numbers, (n) -> n != number)
+      if _.find(order.numbers, (n) -> n.number == number)
+        nums = _.filter(order.numbers, (n) -> n.number != number)
         react.setState({ raw_numbers: nums.join("\n") })
         react.context.updateOrder([["vs.in.portorders[#{i}].numbers", nums]], true)
     )
@@ -72,7 +72,7 @@ PortNumbersComponent = React.createClass
   close: -> this.setState({ order: {numbers:[],invoices:[]}, raw_numbers: '', editing: false, modal: false })
 
   submit: ->
-    this.state.order.numbers = _.map(this.state.raw_numbers.split("\n"), (n) -> n.replace(/\D/g, ''))
+    this.state.order.numbers = _.map(this.state.raw_numbers.split("\n"), (n) -> { number: n.replace(/\D/g, '') })
     i = if _.isInteger(this.state.editing) then this.state.editing else this.context.order.vs.in.portorders.length
     this.context.updateOrder([["vs.in.portorders[#{i}]", this.state.order]], true)
     this.close()
@@ -122,7 +122,7 @@ PortNumbersComponent = React.createClass
     react = this
     if _.isInteger this.state.editing
       _.map(this.state.order.numbers, (n) ->
-        <div key={n} onClick={react.removeNumber.bind(null, n)}>{n}</div>
+        <div key={n.number} onClick={react.removeNumber.bind(null, n.number)}>{n.number}</div>
       )
     else
       _.map(this.rawNums(), (n) ->
