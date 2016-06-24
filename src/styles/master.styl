@@ -515,6 +515,17 @@ input
           .label
             font-weight: 600
             width: 100px
+          .value
+            div
+              display: inline-block
+              vertical-align: top
+              &:hover
+                color: #ccc
+                cursor: pointer
+              &::after
+                content: ',\00a0'
+              &:last-child::after
+                content: ''
     &.ReactModal__Content--after-open
       transform: scale(1) rotateX(0deg) !important
       transition: all 150ms ease-in

@@ -8,6 +8,7 @@ ServiceTypeComponent = React.createClass
     nav: React.PropTypes.func
     syncOrder: React.PropTypes.func
     updateOrder: React.PropTypes.func
+    continueText: React.PropTypes.func
 
   updateInput: (path, ev) ->
     this.context.updateOrder([[path, parseInt(ev.target.value) || null]])
@@ -90,7 +91,7 @@ ServiceTypeComponent = React.createClass
       <div className='foot'>
         <ul className='links'>
           <li className={this.backClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'back', this.props.route.path)}>Back</a></li>
-          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>Continue</a></li>
+          <li className={this.continueClass()}><a href='javascript:void(0)' onClick={this.context.nav.bind(null, 'continue', this.props.route.path)}>{this.context.continueText('service_type')}</a></li>
         </ul>
       </div>
     </div>
