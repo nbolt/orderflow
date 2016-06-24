@@ -62,8 +62,8 @@ OrderComponent = React.createClass
 
   vs: ->
     vs = ['service_type', 'service_address', 'ip_addresses', 'trunk_config', 'new_numbers', 'port_numbers', 'number_features', 'review']
-    _.remove(vs, (pane) -> pane == 'port_numbers') unless _.get(this.context.order, 'vs.in.port_numbers')
-    _.remove(vs, (pane) -> pane == 'new_numbers')  unless _.get(this.context.order, 'vs.in.new_numbers')
+    _.remove(vs, (pane) -> pane == 'port_numbers') unless _.get(this.context.order, 'vs.in.port_numbers') || !_.get(this.context.order, 'vs._service_direction.out')
+    _.remove(vs, (pane) -> pane == 'new_numbers')  unless _.get(this.context.order, 'vs.in.new_numbers') || !_.get(this.context.order, 'vs._service_direction.out')
     vs
 
   linkClass: (path) ->

@@ -26,6 +26,10 @@ ServiceTypeComponent = React.createClass
   port_numbers: (ev) -> this.context.updateOrder([['vs.in.port_numbers', ev.target.checked]], false)
   new_numbers:  (ev) -> this.context.updateOrder([['vs.in.new_numbers', ev.target.checked]], false)
 
+  qs: ->
+    classNames 'qs',
+      hidden: _.get(this.context.order, 'vs._service_direction.out')
+
   backClass: ->
 
   continueClass: ->
@@ -90,7 +94,7 @@ ServiceTypeComponent = React.createClass
             </div>
           </div>
         </div>
-        <div className='qs'>
+        <div className={this.qs()}>
           <div className='title'>Will you be:</div>
           <div className='field'>
             <div className='check'><input type='checkbox' checked={_.get(this.context.order, 'vs.in.port_numbers')} onChange={this.port_numbers}/></div>
