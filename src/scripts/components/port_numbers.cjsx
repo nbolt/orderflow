@@ -72,7 +72,8 @@ PortNumbersComponent = React.createClass
   close: -> this.setState({ order: {numbers:[],invoices:[]}, raw_numbers: '', editing: false, modal: false })
 
   submit: ->
-    this.state.order.numbers = _.map(this.state.raw_numbers.split("\n"), (n) -> { number: n.replace(/\D/g, '') })
+    nums = _.reject(this.state.raw_numbers.split("\n"), (str) -> _.isEmpty str)
+    this.state.order.numbers = _.map(nums, (n) -> { number: n.replace(/\D/g, '') })
     i = if _.isInteger(this.state.editing) then this.state.editing else this.context.order.vs.in.portorders.length
     this.context.updateOrder([["vs.in.portorders[#{i}]", this.state.order]], true)
     this.close()
