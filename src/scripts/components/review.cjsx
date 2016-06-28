@@ -21,26 +21,32 @@ ReviewComponent = React.createClass
     <div id='review'>
       <div className='viewport'>
         <div className='costs'>
-          <div className='cost head'>
-            <div className='column'>SKU</div>
-            <div className='column'>Description</div>
-            <div className='column'>Quantity</div>
-            <div className='column'>Unit MRC</div>
-            <div className='column'>Unit NRC</div>
-            <div className='column'>Total MRC</div>
-            <div className='column'>Total NRC</div>
-          </div>
-          {_.map(this.context.cost, (item, i) ->
-            <div className='cost' key={i}>
-              <div className='column'>{item['sku']}</div>
-              <div className='column'>{item['description']}</div>
-              <div className='column'>{item['quantity']}</div>
-              <div className='column'>{item['unit_mrc']}</div>
-              <div className='column'>{item['unit_nrc']}</div>
-              <div className='column'>{item['total_mrc']}</div>
-              <div className='column'>{item['total_nrc']}</div>
-            </div>
-          )}
+          <table>
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Unit NRC</th>
+                <th>Unit MRC</th>
+                <th>Total NRC</th>
+                <th>Total MRC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {_.map(this.context.cost, (item, i) ->
+                <tr key={i}>
+                  <td>{item['sku']}</td>
+                  <td>{item['description']}</td>
+                  <td>{item['quantity']}</td>
+                  <td>{item['unit_nrc']}</td>
+                  <td>{item['unit_mrc']}</td>
+                  <td>{item['total_nrc']}</td>
+                  <td>{item['total_mrc']}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
       <div className='foot'>

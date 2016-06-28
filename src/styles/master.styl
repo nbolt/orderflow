@@ -147,10 +147,9 @@ input
               .title, .price
                 display: inline-block
                 vertical-align: top
-              .title
-                font-weight: 600
               .price
                 margin: 0 12px 0 6px
+                color: #444
                 &::before
                   content: '$'
       &.right
@@ -271,18 +270,19 @@ input
               .ip
                 font-weight: 600
     #review
-      .costs
-        .cost
-          padding: 8px 0
-          .column
-            display: inline-block
-            vertical-align: top
-            text-align: center
-            width: 98px
-          &.head
-            padding: 12px 0
-            .column
-              text-decoration: underline
+      table
+        height: auto !important
+        width: 100%
+        height: 400px
+        th, td
+          text-align: center
+        th
+          text-decoration: underline
+        td
+          font-size: 0.9em
+        tbody
+          tr
+            height: 60px
     #port-numbers
       .tab-content
         .column
@@ -398,19 +398,21 @@ input
           font-weight: 600
     #number-features
       .numbers-container
-        .numbers
-          height: 310px
-          overflow-y: auto
-        .row
-          margin: 10px 0
-          .column
+        height: 400px
+        overflow-y: auto
+        table
+          height: auto !important
+          width: 100%
+          height: 400px
+          th, td
+            text-align: center
+            input
+              width: 100px
+              margin: 10px 0
+          th
+            text-decoration: underline
+          td
             font-size: 0.9em
-            display: inline-block
-            vertical-align: top
-            width: 12.5%
-            .text
-              text-align: center
-              padding: 8px 0
             .check
               text-align: center
               .icon
@@ -424,12 +426,6 @@ input
                   color: #27ae60
               &:hover
                 cursor: pointer
-            input
-              width: 100%
-          &.head
-            .column
-              .text
-                text-decoration: underline
     #ip-addresses
       .routing-method
         margin-top: 36px
