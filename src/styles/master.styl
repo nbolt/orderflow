@@ -130,15 +130,29 @@ input
         color: gray
         nav
           overflow: auto
-          height: 440px
+          height: 400px
           li
             margin: 16px 0
             &.selected a
               color: #444
         .info
-          height: 20px
+          height: 60px
           .em
             color: #444
+          .totals
+            margin-bottom: 20px
+            .total
+              display: inline-block
+              vertical-align: top
+              .title, .price
+                display: inline-block
+                vertical-align: top
+              .title
+                font-weight: 600
+              .price
+                margin: 0 12px 0 6px
+                &::before
+                  content: '$'
       &.right
         width: 75%
         .foot
@@ -258,20 +272,6 @@ input
                 font-weight: 600
     #review
       .costs
-        .totals
-          margin-bottom: 20px
-          .total
-            display: inline-block
-            vertical-align: top
-            .title, .price
-              display: inline-block
-              vertical-align: top
-            .title
-              font-weight: 600
-            .price
-              margin: 0 25px 0 10px
-              &::before
-                content: '$'
         .cost
           padding: 8px 0
           .column

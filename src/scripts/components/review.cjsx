@@ -14,8 +14,6 @@ ReviewComponent = React.createClass
   backClass: ->
   continueClass: ->
 
-  total: (type) -> _.reduce(this.context.cost, ((a, item) -> item["total_#{type}"] + a), 0)
-
   componentDidMount: ->
     this.context.syncOrder()
 
@@ -23,16 +21,6 @@ ReviewComponent = React.createClass
     <div id='review'>
       <div className='viewport'>
         <div className='costs'>
-          <div className='totals'>
-            <div className='total'>
-              <div className='title'>Total NRC:</div>
-              <div className='price'>{this.total('nrc')}</div>
-            </div>
-            <div className='total'>
-              <div className='title'>Total MRC:</div>
-              <div className='price'>{this.total('mrc')}</div>
-            </div>
-          </div>
           <div className='cost head'>
             <div className='column'>SKU</div>
             <div className='column'>Description</div>

@@ -11,6 +11,7 @@ AppComponent = React.createClass
     hintClass: React.PropTypes.func
     hintContent: React.PropTypes.func
     cost: React.PropTypes.array
+    total: React.PropTypes.object
     address: React.PropTypes.object
     addressValidated: React.PropTypes.bool
     validateAddress: React.PropTypes.func
@@ -30,6 +31,7 @@ AppComponent = React.createClass
     hintClass: this.hintClass
     hintContent: this.hintContent
     cost: this.state.cost
+    total: this.state.total
     address: this.state.address
     addressValidated: this.state.addressValidated
     validateAddress: this.validateAddress
@@ -110,7 +112,7 @@ AppComponent = React.createClass
       contentType: 'application/json'
       data: JSON.stringify({ order: order })
       success: (rsp, w) ->
-        react.setState({ cost: rsp['cost'] }) if rsp['cost']
+        react.setState({ cost: rsp['cost'], total: { nrc: rsp.nrc, mrc: rsp.mrc } }) if rsp['cost']
         cb() if cb
       error: (rsp) ->
         rsp = rsp['responseJSON']
@@ -146,6 +148,9 @@ AppComponent = React.createClass
     cost:  []
     errors: []
     addressValidated: false
+    total:
+      nrc: 0
+      mrc: 0
 
   componentWillMount: -> this.setState({ headers: { Authorization: "Bearer #{this.state.token}" } }) if this.state.token
 

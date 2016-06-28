@@ -4,6 +4,7 @@ OrderComponent = React.createClass
   contextTypes:
     token: React.PropTypes.string
     order: React.PropTypes.object
+    total: React.PropTypes.object
     fetchOrder: React.PropTypes.func
     syncOrder: React.PropTypes.func
 
@@ -91,6 +92,16 @@ OrderComponent = React.createClass
             </ul>
           </nav>
           <div className='info'>
+            <div className='totals'>
+              <div className='total'>
+                <div className='title'>MRC:</div>
+                <div className='price'>{this.context.total.mrc}</div>
+              </div>
+              <div className='total'>
+                <div className='title'>NRC:</div>
+                <div className='price'>{this.context.total.nrc}</div>
+              </div>
+            </div>
             <div className='ident'>Order Number: <span className='em'>{this.props.params.ident}</span></div>
           </div>
         </div>
