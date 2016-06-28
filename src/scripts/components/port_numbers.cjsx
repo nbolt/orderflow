@@ -139,24 +139,22 @@ PortNumbersComponent = React.createClass
 
   oNums: ->
     react = this
-    if _.isInteger this.state.editing
-      _.map(this.state.order.numbers, (n) ->
-        <tr key={n}>
-          <td>{n.number}</td>
-          <td>Portable</td>
-        </tr>
-      )
+    _.map(this.rawNums(), (n, i) ->
+      <tr key={i}>
+        <td>{n}</td>
+        <td className={react.numClass(n)}>{react.portText(n)}</td>
+      </tr>
+    )
+
+  portText: (num) ->
+    if _.isInteger(this.state.editing) && _.find(this.state.order.numbers, (n) -> n.number == num)
+      'Portable'
     else
-      _.map(this.rawNums(), (n) ->
-        <tr key={n}>
-          <td>{n}</td>
-          <td className={react.numClass(n)}>{react.state.numbers[n] && 'Portable' || 'Not Portable'}</td>
-        </tr>
-      )
+      this.state.numbers[num] && 'Portable' || 'Not Portable'
 
   numClass: (n) ->
     classNames 'status',
-      err: !this.state.numbers[n]
+      err: !(this.portText(n) == 'Portable')
 
   toggleModal: ->
     this.setState({ modal: !this.state.modal })
