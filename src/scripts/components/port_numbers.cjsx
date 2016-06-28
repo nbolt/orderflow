@@ -155,7 +155,7 @@ PortNumbersComponent = React.createClass
       )
 
   numClass: (n) ->
-    classNames
+    classNames 'status',
       err: !this.state.numbers[n]
 
   toggleModal: ->
