@@ -85,7 +85,7 @@ PortNumbersComponent = React.createClass
 
   submit: ->
     react = this
-    nums = _.reject(this.state.raw_numbers.split("\n"), (str) -> _.isEmpty(str) || !react.state.numbers[str])
+    nums = _.reject(this.state.raw_numbers.split("\n"), (str) -> _.isEmpty(str) || react.portText(str) == 'Not Portable')
     this.state.order.numbers = _.map(nums, (n) -> { number: n.replace(/\D/g, '') })
     i = if _.isInteger(this.state.editing) then this.state.editing else this.context.order.vs.in.portorders.length
     this.context.updateOrder([["vs.in.portorders[#{i}]", this.state.order]], true)
@@ -154,7 +154,7 @@ PortNumbersComponent = React.createClass
 
   numClass: (n) ->
     classNames 'status',
-      err: !(this.portText(n) == 'Portable')
+      err: this.portText(n) == 'Not Portable'
 
   toggleModal: ->
     this.setState({ modal: !this.state.modal })
