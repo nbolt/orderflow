@@ -33,14 +33,17 @@ NumberFeaturesComponent = React.createClass
     _.concat(n, p)
 
   attr: (n, attr) ->
-    if n[attr]
-      <div className='check y' onClick={this.toggle.bind(null, n, attr)}>
-        <div className='icon typcn typcn-media-record'/>
-      </div>
+    if attr == 'e911' && n.type == 'tfn'
+      <div/>
     else
-      <div className='check n' onClick={this.toggle.bind(null, n, attr)}>
-        <div className='icon typcn typcn-media-record-outline'/>
-      </div>
+      if n[attr]
+        <div className='check y' onClick={this.toggle.bind(null, n, attr)}>
+          <div className='icon typcn typcn-media-record'/>
+        </div>
+      else
+        <div className='check n' onClick={this.toggle.bind(null, n, attr)}>
+          <div className='icon typcn typcn-media-record-outline'/>
+        </div>
 
   attrInput: (n, attr, ev) ->
     switch n.action
