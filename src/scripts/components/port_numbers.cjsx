@@ -32,6 +32,18 @@ PortNumbersComponent = React.createClass
         react.setState({ order: order })
         $('#upload').val('')
 
+  portable: (n) ->
+    react = this
+    $.ajax
+      url: "#{react.context.domain}/api/lnp/#{n}/"
+      method: 'GET'
+      headers: react.context.headers
+      dataType: 'json'
+      success: (rsp) ->
+        numbers = react.state.numbers
+        numbers[rsp.number] = rsp.can_port
+        react.setState({ numbers: numbers })
+
   edit: (i) ->
     order = _.get(this.context.order, "vs.in.portorders[#{i}]")
     this.setState({ order: order, editing: i, raw_numbers: _.map(order.numbers, (n) -> n.number).join("\n") })
@@ -69,18 +81,24 @@ PortNumbersComponent = React.createClass
 
   updateRawNumbers: (ev) -> this.setState({ raw_numbers: ev.target.value })
 
-  close: -> this.setState({ order: {numbers:[],invoices:[]}, raw_numbers: '', editing: false, modal: false })
+  close: -> this.setState({ order: {numbers:[],invoices:[]}, raw_numbers: '', editing: false, modal: false, numbers: {} })
 
   submit: ->
-    nums = _.reject(this.state.raw_numbers.split("\n"), (str) -> _.isEmpty str)
+    react = this
+    nums = _.reject(this.state.raw_numbers.split("\n"), (str) -> _.isEmpty(str) || !react.state.numbers[str])
     this.state.order.numbers = _.map(nums, (n) -> { number: n.replace(/\D/g, '') })
     i = if _.isInteger(this.state.editing) then this.state.editing else this.context.order.vs.in.portorders.length
     this.context.updateOrder([["vs.in.portorders[#{i}]", this.state.order]], true)
     this.close()
 
-  submitModal: (i) ->
+  submitModal: (i, nums) ->
+    react = this
     this.setState({ modal: !this.state.modal })
     this.edit i if _.isInteger i
+    if nums
+      _.each(this.rawNums(), (n) ->
+        react.portable n
+      )
 
   selected: (key, value) ->
     react = this
@@ -123,12 +141,22 @@ PortNumbersComponent = React.createClass
     react = this
     if _.isInteger this.state.editing
       _.map(this.state.order.numbers, (n) ->
-        <div key={n.number} onClick={react.removeNumber.bind(null, n.number)}>{n.number}</div>
+        <tr key={n}>
+          <td>{n.number}</td>
+          <td>Portable</td>
+        </tr>
       )
     else
       _.map(this.rawNums(), (n) ->
-        <div key={n}>{n}</div>
+        <tr key={n}>
+          <td>{n}</td>
+          <td className={react.numClass(n)}>{react.state.numbers[n] && 'Portable' || 'Not Portable'}</td>
+        </tr>
       )
+
+  numClass: (n) ->
+    classNames
+      err: !this.state.numbers[n]
 
   toggleModal: ->
     this.setState({ modal: !this.state.modal })
@@ -152,6 +180,7 @@ PortNumbersComponent = React.createClass
     order: {numbers: [], invoices: []}
     editing: false
     modal: false
+    numbers: {}
 
   render: ->
     react = this
@@ -191,9 +220,18 @@ PortNumbersComponent = React.createClass
             <div className='label'>Invoices:</div>
             <div className='value'>{this.oInvoices()}</div>
           </div>
-          <div className='field full'>
-            <div className='label'>Numbers:</div>
-            <div className='value'>{this.oNums()}</div>
+          <div className='field half table'>
+            <table>
+              <thead>
+                <tr>
+                  <th>Number</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.oNums()}
+              </tbody>
+            </table>
           </div>
         </div>
         {this.modalNav()}
@@ -234,7 +272,7 @@ PortNumbersComponent = React.createClass
               <div className='submit'>
                 <div className='links'>
                   <div className='link' onClick={this.invoice}>Upload Invoice</div>
-                  <div className='link' onClick={this.submitModal}>Submit Numbers to Order</div>
+                  <div className='link' onClick={this.submitModal.bind(null, null, true)}>Submit Numbers to Order</div>
                 </div>
                 <input id='upload' type='file' onChange={this.upload}/>
               </div>

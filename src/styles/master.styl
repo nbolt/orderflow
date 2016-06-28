@@ -511,8 +511,9 @@ input
       height: 300px
       margin-left: -300px
     &.port-numbers
+      top: 100px !important
       width: 720px
-      height: 400px
+      height: 500px
       margin-left: -360px
       position: relative
       .actions
@@ -539,8 +540,21 @@ input
             width: 200px
           &.half
             width: 300px
-          &.full
-            width: 600px
+            &.table
+              height: 200px
+              overflow: auto
+              table
+                th, td
+                  text-align: center
+                  padding: 4px 12px
+                th
+                  text-decoration: underline
+                td
+                  &.err
+                    color: red
+                tbody
+                  tr
+                    height: 30px
           .label, .value
             display: inline-block
             vertical-align: top
