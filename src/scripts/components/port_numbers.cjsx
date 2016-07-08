@@ -32,16 +32,20 @@ PortNumbersComponent = React.createClass
         react.setState({ order: order })
         $('#upload').val('')
 
-  portable: (n) ->
+  numberInfo: (n) ->
     react = this
+    api =
+      switch this.state.order.type
+        when 'did' then "/api/phonenumber/#{n}/info"
+        when 'tfn' then "/api/lnp/#{n}"
     $.ajax
-      url: "#{react.context.domain}/api/lnp/#{n}/"
+      url: "#{react.context.domain}#{api}"
       method: 'GET'
       headers: react.context.headers
       dataType: 'json'
       success: (rsp) ->
         numbers = react.state.numbers
-        numbers[rsp.number] = rsp.can_port
+        numbers[n] = if react.state.order.type == 'did' then rsp else { portable: rsp.can_port }
         react.setState({ numbers: numbers })
 
   edit: (i) ->
@@ -96,9 +100,9 @@ PortNumbersComponent = React.createClass
     this.setState({ modal: !this.state.modal })
     this.edit i if _.isInteger i
     if nums
-      this.setState({ raw_numbers: this.state.raw_numbers.replace(/\n$/, '') })
+      this.setState({ raw_numbers: this.state.raw_numbers.replace(/\n$/, '') }) unless _.isEmpty(this.state.raw_numbers)
       _.each(this.rawNums(), (n) ->
-        react.portable n
+        react.numberInfo n
       )
 
   selected: (key, value) ->
@@ -141,17 +145,29 @@ PortNumbersComponent = React.createClass
   oNums: ->
     react = this
     _.map(this.rawNums(), (n, i) ->
-      <tr key={i}>
-        <td>{n}</td>
-        <td className={react.numClass(n)}>{react.portText(n)}</td>
-      </tr>
+      switch react.state.order.type
+        when 'tfn'
+          <tr key={i}>
+            <td>{n}</td>
+            <td className={react.numClass(n)}>{react.portText(n)}</td>
+          </tr>
+        when 'did'
+          <tr key={i}>
+            <td>{n}</td>
+            <td className={react.numClass(n)}>{react.portText(n)}</td>
+            <td>{_.get(react.state.numbers[n], 'state')}</td>
+            <td>{_.get(react.state.numbers[n], 'rate_center')}</td>
+            <td>{_.get(react.state.numbers[n], 'lata')}</td>
+            <td>{_.get(react.state.numbers[n], 'ocn')}</td>
+            <td>{_.get(react.state.numbers[n], 'ocn_name')}</td>
+          </tr>
     )
 
   portText: (num) ->
     if _.isInteger(this.state.editing) && _.find(this.state.order.numbers, (n) -> n.number == num)
       'Portable'
     else
-      this.state.numbers[num] && 'Portable' || 'Not Portable'
+      _.get(this.state.numbers[num], 'portable') && 'Portable' || 'Not Portable'
 
   numClass: (n) ->
     classNames 'status',
@@ -173,6 +189,11 @@ PortNumbersComponent = React.createClass
         <div className='action' onClick={this.submitModal}>Close</div>
         <div className='action' onClick={this.submit}>Submit Numbers to Order</div>
       </div>
+
+  componentDidMount: ->
+    react = this
+    window.props = -> react.state
+    window.raw   = -> react.rawNums
 
   getInitialState: ->
     tab: 'port'
@@ -219,13 +240,27 @@ PortNumbersComponent = React.createClass
             <div className='label'>Invoices:</div>
             <div className='value'>{this.oInvoices()}</div>
           </div>
-          <div className='field half table'>
+          <div className='field table'>
             <table>
               <thead>
-                <tr>
-                  <th>Number</th>
-                  <th>Status</th>
-                </tr>
+                  {(->
+                    switch react.state.order.type
+                      when 'tfn'
+                        <tr>
+                          <th>Number</th>
+                          <th>Status</th>
+                        </tr>
+                      when 'did'
+                        <tr>
+                          <th>Number</th>
+                          <th>Status</th>
+                          <th>State</th>
+                          <th>Rate Center</th>
+                          <th>LATA</th>
+                          <th>Original OCN</th>
+                          <th>Original OCN Name</th>
+                        </tr>
+                   )()}
               </thead>
               <tbody>
                 {this.oNums()}
