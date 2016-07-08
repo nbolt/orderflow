@@ -96,6 +96,7 @@ PortNumbersComponent = React.createClass
     this.setState({ modal: !this.state.modal })
     this.edit i if _.isInteger i
     if nums
+      this.setState({ raw_numbers: this.state.raw_numbers.replace(/\n$/, '') })
       _.each(this.rawNums(), (n) ->
         react.portable n
       )
@@ -230,6 +231,7 @@ PortNumbersComponent = React.createClass
                 {this.oNums()}
               </tbody>
             </table>
+            <div className='msg'>non-portable numbers will not be added</div>
           </div>
         </div>
         {this.modalNav()}
@@ -260,6 +262,7 @@ PortNumbersComponent = React.createClass
               </div>
               <div className='input'>
                 <textarea value={this.state.raw_numbers} onChange={this.updateRawNumbers} rows='6' placeholder='Input number list, one per line.'></textarea>
+                <div className='msg'>one number per line</div>
               </div>
               <div className='provider-info'>
                 <input type='text' placeholder='Current Provider' value={this.state.order.provider} onChange={this.updateField.bind(null, 'provider')}/>
