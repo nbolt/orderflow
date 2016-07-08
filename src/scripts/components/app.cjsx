@@ -88,7 +88,7 @@ AppComponent = React.createClass
         react.props.history.push("/order/#{rsp.ident}/service_type")
         react.fetchOrder()
 
-  fetchOrder: ->
+  fetchOrder: (sync=true) ->
     react = this
     $.ajax
       url: "#{react.state.domain}/api/_flow/orders/#{react.props.params.ident}"
@@ -96,9 +96,8 @@ AppComponent = React.createClass
       headers: react.state.headers
       dataType: 'json'
       success: (rsp) ->
-        first = if react.state.order then false else true
         react.setState({ order: rsp.order })
-        react.syncOrder(react.fetchOrder) if first
+        react.syncOrder(react.fetchOrder.bind(null, false)) if sync && !_.get(rsp.order, 'vs._enabled') && !_.get(rsp.order, 'sms._enabled') && !_.get(rsp.order, 'webrtc._enabled')
 
   syncOrder: (cb) ->
     react = this
