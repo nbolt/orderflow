@@ -190,11 +190,6 @@ PortNumbersComponent = React.createClass
         <div className='action' onClick={this.submit}>Submit Numbers to Order</div>
       </div>
 
-  componentDidMount: ->
-    react = this
-    window.props = -> react.state
-    window.raw   = -> react.rawNums
-
   getInitialState: ->
     tab: 'port'
     order: {numbers: [], invoices: []}
