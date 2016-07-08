@@ -1,18 +1,19 @@
-var gulp   = require('gulp'),
-    axis   = require('axis'),
-    accord = require('gulp-accord'),
-    cjsx   = require('gulp-cjsx'),
-    envify = require('gulp-envify'),
-    gutil  = require('gulp-util'),
-    jshint = require('gulp-jshint'),
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
-    concat = require('gulp-concat'),
-    notify = require('gulp-notify'),
-    cache = require('gulp-cache'),
-    imagemin = require('gulp-imagemin'),
+var gulp       = require('gulp'),
+    axis       = require('axis'),
+    accord     = require('gulp-accord'),
+    cjsx       = require('gulp-cjsx'),
+    envify     = require('gulp-envify'),
+    gutil      = require('gulp-util'),
+    jshint     = require('gulp-jshint'),
+    uglify     = require('gulp-uglify'),
+    rename     = require('gulp-rename'),
+    concat     = require('gulp-concat'),
+    notify     = require('gulp-notify'),
+    cache      = require('gulp-cache'),
+    imagemin   = require('gulp-imagemin'),
     livereload = require('gulp-livereload'),
-    del    = require('del')
+    del        = require('del'),
+    bs         = require("gulp-bootstrap-configurator")
 
 var env = {token: gutil.env.token || null, domain: gutil.env.domain || ''}
 
@@ -64,8 +65,20 @@ gulp.task('assets', function() {
     .pipe(notify({ message: 'Assets task complete' }));
 });
 
+gulp.task('bs-styles', function(){
+  return gulp.src("config.json")
+    .pipe(bs.css())
+    .pipe(gulp.dest("dist/styles"));
+});
+
+gulp.task('bs-scripts', function(){
+  return gulp.src("config.json")
+    .pipe(bs.js())
+    .pipe(gulp.dest("dist/scripts"));
+});
+
 gulp.task('default', ['clean'], function() {
-  gulp.start('images', 'scripts', 'components', 'styles', 'stylus', 'assets');
+  gulp.start('images', 'scripts', 'components', 'styles', 'stylus', 'assets', 'bs-styles', 'bs-scripts');
 });
 
 gulp.task('watch', function() {

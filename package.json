@@ -18,5 +18,9 @@
     "gulp-accord": "*",
     "del": "*",
     "stylus": "*"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.6",
+    "gulp-bootstrap-configurator": "^0.3.3"
   }
 }
